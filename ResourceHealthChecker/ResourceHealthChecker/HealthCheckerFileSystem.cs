@@ -13,7 +13,7 @@ namespace SlugEnt.ResourceHealthChecker
 	/// </summary>
 	public class HealthCheckerFileSystem : AbstractHealthChecker
 	{
-		private ILogger<HealthCheckerFileSystem> _logger;
+		//private ILogger<HealthCheckerFileSystem> _logger;
 		private EnumHealthStatus                         _statusRead    = EnumHealthStatus.Failed;
 		private EnumHealthStatus                         _statusWrite   = EnumHealthStatus.Failed;
 		private EnumHealthStatus                         _statusOverall = EnumHealthStatus.Failed;
@@ -131,7 +131,7 @@ namespace SlugEnt.ResourceHealthChecker
 			else { _statusOverall = EnumHealthStatus.Healthy;}
 
 
-			_logger.LogDebug("HealthCheckerConfigFile [ " + Name + " ] Status: " + _statusOverall);
+			//_logger.LogDebug("HealthCheckerFileSystem [ " + Name + " ] Status: " + _statusOverall);
 			return (_statusOverall, message);
 		}
 	}

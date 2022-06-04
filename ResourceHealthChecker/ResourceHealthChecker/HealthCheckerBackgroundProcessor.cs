@@ -56,27 +56,42 @@ namespace ResourceHealthChecker
 			
 			while (!stoppingToken.IsCancellationRequested)
 			{
-				_healthCheckProcessor.CheckHealth();
+				try {
+					_healthCheckProcessor.CheckHealth();
+					_lastStatusCount++;
 
-				// We sleep for a second to allow health checks to run then check the status.  Note, some may still be running, especially if they are erroring, there status will be updated next run.
-				await Task.Delay(1000, stoppingToken);
+					// We sleep for a second to allow health checks to run then check the status.  Note, some may still be running, especially if they are erroring, there status will be updated next run.
+					await Task.Delay(1000, stoppingToken);
 
-				EnumHealthStatus currentStatus = _healthCheckProcessor.Status;
+					EnumHealthStatus currentStatus = _healthCheckProcessor.Status;
 
-				if (currentStatus != _lastHealthStatus)
-				{
-					string msg = "  It was previously in a " + _lastHealthStatus.ToString() + " state for " + _lastStatusCount + " Health Cycle Checks.";
-					if (currentStatus == EnumHealthStatus.Healthy) _logger.LogWarning("Health Status has returned to a Healthy State." + msg);
-					else if (currentStatus == EnumHealthStatus.Failed) _logger.LogCritical("Health status has changed to a Failed State.  The service will likely not operate correctly." + msg);
-					else if (currentStatus == EnumHealthStatus.Degraded) _logger.LogError("Health Status has changed to a Degraded State.  This may or may not have impacts on the service.  Investigation should immediately be looked into." + msg);
-					else if (currentStatus == EnumHealthStatus.Unknown) _logger.LogError("Health Status is unknown.  This should be short term upon initial application start.  If it does not change shortly, then something is wrong.");
+					if ( currentStatus != _lastHealthStatus ) {
+						string msg = "  It was previously in a " + _lastHealthStatus.ToString() + " state for " + _lastStatusCount + " Health Cycle Checks.";
+						if ( currentStatus == EnumHealthStatus.Healthy )
+							_logger.LogWarning("Health Status has returned to a Healthy State." + msg);
+						else if ( currentStatus == EnumHealthStatus.Failed )
+							_logger.LogCritical("Health status has changed to a Failed State.  The service will likely not operate correctly." + msg);
+						else if ( currentStatus == EnumHealthStatus.Degraded )
+							_logger.LogError(
+								"Health Status has changed to a Degraded State.  This may or may not have impacts on the service.  Investigation should immediately be looked into." +
+								msg);
+						else if ( currentStatus == EnumHealthStatus.Unknown )
+							_logger.LogError(
+								"Health Status is unknown.  This should be short term upon initial application start.  If it does not change shortly, then something is wrong.");
 
-					_lastHealthStatus = currentStatus;
-					_lastStatusCount = 1;
+						_lastHealthStatus = currentStatus;
+						_lastStatusCount = 1;
+					}
+
+					// Sleep for cycle time.
+					await Task.Delay(_sleepTime, stoppingToken);
 				}
-
-				// Sleep for cycle time.
-				await Task.Delay(_sleepTime, stoppingToken);
+				catch ( Exception ex ) {
+					if (stoppingToken.IsCancellationRequested) 
+						_logger.LogDebug("Health Checker Background Processor has been requested to shut down.");
+					else
+						_logger.LogError(ex,"Unhandled error in the HealthCheckerBackgroundProcessor loop.  Error was: " + ex.Message);
+				}
 			}
 
 		}

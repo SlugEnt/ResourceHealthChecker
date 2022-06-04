@@ -29,17 +29,18 @@ public class Program {
 		                       .UseSerilog()
 		                       .ConfigureServices((_, services) =>
 
-			                                          // The main program
+			                                          // The main program     
 			                                          services.AddTransient<App>()
 
 			                                                  // Add Health check Processor to available services
 			                                                  .AddSingleton<HealthCheckProcessor>()
+
 			                                                  .AddHostedService<HealthCheckerBackgroundProcessor>())
 		                       .Build();
 
 
 		// Run the Main App.
-		host.Run();
+		host.RunAsync();
 		App app = host.Services.GetRequiredService<App>();
 		await app.ExecuteAsync();
 		Log.CloseAndFlush();

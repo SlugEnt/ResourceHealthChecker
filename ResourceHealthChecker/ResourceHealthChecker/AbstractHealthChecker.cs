@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace SlugEnt.ResourceHealthChecker
 {
@@ -13,7 +14,7 @@ namespace SlugEnt.ResourceHealthChecker
 		private DateTimeOffset          _nextStatusCheck;
 		private bool                    _isRunning;
 		private List<HealthEntryRecord> _healthRecords;
-
+		protected ILogger _logger;
 
 		public AbstractHealthChecker (string name, EnumHealthCheckerType type, IHealthCheckConfig healthCheckConfig) {
 			Name = name;
@@ -134,6 +135,19 @@ namespace SlugEnt.ResourceHealthChecker
 				HealthEntryRecord healthEntryRecord = new (newStatus, message);
 				_healthRecords.Add(healthEntryRecord);
 				_status = newStatus;
+
+				// Lets log it.
+				if (newStatus == EnumHealthStatus.Healthy)
+					_logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered into a HEALTHY State.  Message {@message}", message);
+				else if (newStatus == EnumHealthStatus.Failed) 
+					_logger.LogError("Health Check: " + ShortTitle() + "|  has entered the FAILED State.  Message {@message}", message);
+				else if (newStatus == EnumHealthStatus.Degraded)
+					_logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered the DEGRADED State.  Message {@message}", message);
+				else if (newStatus == EnumHealthStatus.Unknown)
+					_logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered the UNKNOWN State.  Message {@message}", message);
+				else _logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered an undefined State.  Message { @message}", message);
+
+				
 			}
 			else {
 				_healthRecords[^1].Increment();
@@ -170,5 +184,14 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		/// <returns></returns>
 		public abstract void  DisplayHTML (StringBuilder sb);
+
+
+		/// <summary>
+		/// Displays a Short Title for this Checker
+		/// </summary>
+		/// <returns></returns>
+		protected string ShortTitle () {
+			return CheckerName + " [" + Name + "]";
+		}
 	}
 }
