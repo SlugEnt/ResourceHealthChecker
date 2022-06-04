@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceHealthChecker", "Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleConsoleApp", "SampleConsoleApp\SampleConsoleApp.csproj", "{AAC39504-0C5C-4ADA-9B5B-21484E2C370B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceHealthChecker.SqlServer", "ResourceHealthChecker.SqlServer\ResourceHealthChecker.SqlServer.csproj", "{7B27B218-2CB6-44B3-A8FB-A58AE1935F22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{AAC39504-0C5C-4ADA-9B5B-21484E2C370B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAC39504-0C5C-4ADA-9B5B-21484E2C370B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAC39504-0C5C-4ADA-9B5B-21484E2C370B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B27B218-2CB6-44B3-A8FB-A58AE1935F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B27B218-2CB6-44B3-A8FB-A58AE1935F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B27B218-2CB6-44B3-A8FB-A58AE1935F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B27B218-2CB6-44B3-A8FB-A58AE1935F22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

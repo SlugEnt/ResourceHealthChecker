@@ -65,10 +65,11 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		/// <returns></returns>
 		public async Task CheckHealth () {
-			Console.WriteLine("Starting Check Health cycle");
-			foreach (var healthChecker in _healthCheckerList) 
+			_logger.LogDebug("Starting HealthCheckProcessor cycle");
+			foreach ( var healthChecker in _healthCheckerList ) {
 				// We do not await the call, we want to kick it off and let it do its thing.
 				healthChecker.CheckHealth();
+			}
 		}
 
 
@@ -94,7 +95,20 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		public async Task Start () {
 			await CheckHealth();
-			IsStarted = true;
+
+			// So, the checks might be ongoing still.  We continue checking the Status until it's Healthy OR InitialStartup Time is exceeded
+			int sleepTime = 100;
+			int maxWaitTime = 30000;
+			DateTime maxWait = DateTime.Now.AddMilliseconds(maxWaitTime);
+			while ( true ) {
+				Thread.Sleep(sleepTime);
+				if ( Status == EnumHealthStatus.Healthy ) {
+					IsStarted = true;
+					break;
+				}
+				if ( DateTime.Now > maxWait ) break;
+			}
+			
 		}
 
 

@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SlugEnt.ResourceHealthChecker;
 using Microsoft.Extensions.DependencyInjection;
+using ResourceHealthChecker.SqlServer;
+using SlugEnt.ResourceHealthChecker.SqlServer;
 
 namespace SampleConsoleApp
 {
@@ -37,12 +39,23 @@ namespace SampleConsoleApp
 			// Finish configuring it!
 			healthCheckProcessor.CheckIntervalMS = 7000;
 
-			// Add the Checkers
+
+			//  File System Checker
 			ILogger<HealthCheckerFileSystem> hcfs = _serviceProvider.GetService<ILogger<HealthCheckerFileSystem>>();
 			HealthCheckerFileSystem fileSystemA = new HealthCheckerFileSystem(hcfs, "Temp Folder Read", @"C:\temp", true,false);
 			HealthCheckerFileSystem fileSystemB = new HealthCheckerFileSystem(hcfs, "Windows Folder ReadWrite", @"C:\windows", true, false);
 			healthCheckProcessor.AddCheckItem(fileSystemA);
 			healthCheckProcessor.AddCheckItem(fileSystemB);
+
+
+			// SQL Server Checker
+			string connStr = "server=podmanb.slug.local;Database=AdventureWorks2019;User Id=AdvWorksUser;Password=Test;";
+			HealthCheckerConfigSQLServer dbConfig = new HealthCheckerConfigSQLServer(connStr,"Person.Person");
+			dbConfig.ConnectionString = connStr;
+			ILogger<HealthCheckerSQLServer> hcsqlLogger = _serviceProvider.GetService<ILogger<HealthCheckerSQLServer>>();
+			HealthCheckerSQLServer sqlServer = new HealthCheckerSQLServer(hcsqlLogger, "Adventure Works", dbConfig);
+			healthCheckProcessor.AddCheckItem(sqlServer);
+
 
 			// Ready to do first check!  We wait for it to finish so we can halt further application startup if it initially fails.
 			await healthCheckProcessor.Start();
@@ -50,7 +63,7 @@ namespace SampleConsoleApp
 			// Exit if the Health Check has failed on start;
 			EnumHealthStatus healthCheckStatus = healthCheckProcessor.Status;
 			if ( healthCheckStatus != EnumHealthStatus.Healthy ) {
-				_logger.LogCritical("Initial Resource Health Startup Status is: " + healthCheckStatus.ToString() + "  Application is being shut down." );
+				_logger.LogCritical("Initial Health Startup Status is: " + healthCheckStatus.ToString() + "  Application is being shut down." );
 				return;
 			}
 
