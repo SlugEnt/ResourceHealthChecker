@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -16,10 +17,11 @@ namespace SlugEnt.ResourceHealthChecker
 		private List<HealthEntryRecord> _healthRecords;
 		protected ILogger _logger;
 
-		public AbstractHealthChecker (string name, EnumHealthCheckerType type, IHealthCheckConfig healthCheckConfig) {
+		public AbstractHealthChecker (string name, EnumHealthCheckerType type, IHealthCheckConfig healthCheckConfig, ILogger logger) {
 			Name = name;
 			Config = healthCheckConfig;
 			HealthCheckerType = type;
+			_logger = logger;
 			_status = EnumHealthStatus.Unknown;
 			_lastStatusCheck = DateTimeOffset.Now;
 			_nextStatusCheck = DateTimeOffset.Now;
@@ -47,7 +49,7 @@ namespace SlugEnt.ResourceHealthChecker
 
 
 		/// <summary>
-		/// Current Status of this health checker
+		/// Current Status of this health checker.  This takes into account all checks this health checker performs
 		/// </summary>
 		public EnumHealthStatus Status {
 			get { return _status; }
@@ -109,14 +111,14 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		/// <param name="force"></param>
 		/// <returns></returns>
-		protected abstract Task<(EnumHealthStatus, string)> PerformHealthCheck ();
+		protected abstract Task<(EnumHealthStatus, string)> PerformHealthCheck (CancellationToken stoppingToken);
 
 
 		/// <summary>
 		/// Runs the health check if necessary
 		/// </summary>
 		/// <param name="force"></param>
-		public async Task CheckHealth (bool force = false) {
+		public async Task CheckHealth (CancellationToken token, bool force = false) {
 			bool needToCheck = force;
 
 			if ( IsRunning ) return;
@@ -130,7 +132,7 @@ namespace SlugEnt.ResourceHealthChecker
 
 			EnumHealthStatus newStatus;
 			string message;
-			(newStatus, message) = await PerformHealthCheck();
+			(newStatus, message) = await PerformHealthCheck(token);
 			if ( newStatus != _status ) {
 				HealthEntryRecord healthEntryRecord = new (newStatus, message);
 				_healthRecords.Add(healthEntryRecord);

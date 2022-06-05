@@ -68,7 +68,7 @@ namespace SlugEnt.ResourceHealthChecker
 			_logger.LogDebug("Starting HealthCheckProcessor cycle");
 			foreach ( var healthChecker in _healthCheckerList ) {
 				// We do not await the call, we want to kick it off and let it do its thing.
-				healthChecker.CheckHealth();
+				healthChecker.CheckHealth(CancellationToken);
 			}
 		}
 
@@ -139,5 +139,11 @@ namespace SlugEnt.ResourceHealthChecker
 			return sb;
 
 		}
+
+
+		/// <summary>
+		/// Sets the cancellation Token to be used during asynchronous calls
+		/// </summary>
+		public CancellationToken CancellationToken { get; set; }
 	}
 }

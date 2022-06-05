@@ -53,7 +53,11 @@ namespace ResourceHealthChecker
 		{
 			stoppingToken.Register(StopService);
 
+			// Now that we have the Cancellation token - give it to HealthCheckProcessor
+			_healthCheckProcessor.CancellationToken = stoppingToken;
+
 			
+			// Begin processing
 			while (!stoppingToken.IsCancellationRequested)
 			{
 				try {
