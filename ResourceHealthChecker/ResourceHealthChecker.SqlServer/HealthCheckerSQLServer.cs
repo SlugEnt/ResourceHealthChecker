@@ -14,10 +14,13 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 	public class HealthCheckerSQLServer : AbstractHealthChecker {
 		//private ILogger<HealthCheckerSQLServer> _logger;
 		private string _connectionString;
+		private EnumHealthStatus _statusRead = EnumHealthStatus.Failed;
+		private EnumHealthStatus _statusWrite = EnumHealthStatus.Failed;
+		private EnumHealthStatus _statusOverall = EnumHealthStatus.Failed;
 
 
-		public HealthCheckerSQLServer (ILogger<HealthCheckerSQLServer> logger, string descriptiveName, HealthCheckerConfigSQLServer sqlConfig) : base(
-			descriptiveName, EnumHealthCheckerType.Database, sqlConfig) {
+
+		public HealthCheckerSQLServer (ILogger<HealthCheckerSQLServer> logger, string descriptiveName, HealthCheckerConfigSQLServer sqlConfig) : base(descriptiveName, EnumHealthCheckerType.Database, sqlConfig,logger) {
 
 			if ( sqlConfig.ConnectionString == string.Empty )
 				throw new ApplicationException("At the moment only Connection Strings are supported.  Must supply a connection string");
@@ -68,30 +71,73 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="NotImplementedException"></exception>
-		protected override async Task<(EnumHealthStatus, string)> PerformHealthCheck() {
+		protected override async Task<(EnumHealthStatus, string)> PerformHealthCheck(CancellationToken stoppingToken) {
 			string msg = "";
-			EnumHealthStatus status;
 
 			if ( SQLConfig.ReadTable != string.Empty ) {
 				try {
 					using ( SqlConnection conn = new SqlConnection(_connectionString) ) {
-						conn.Open();
+						await conn.OpenAsync(stoppingToken);
 						string sql = "Select Top 1 * From " + SQLConfig.ReadTable;
 						SqlCommand sqlCommand = new SqlCommand(sql, conn);
 						
-						await sqlCommand.ExecuteNonQueryAsync();
-						status = EnumHealthStatus.Healthy;
+						await sqlCommand.ExecuteNonQueryAsync(stoppingToken);
+						_statusRead = EnumHealthStatus.Healthy;
 					}
 				}
 				catch ( Exception ex ) {
-					msg = ex.Message;
-					status = EnumHealthStatus.Failed;
+					msg = "Read Msg: " + ex.Message;
+					_statusRead = EnumHealthStatus.Failed;
 				}
 
-				return (status, msg);
+				//return (readStatus, msg);
 			}
 
-			return (EnumHealthStatus.Healthy, string.Empty);
+
+			if (SQLConfig.WriteTable != string.Empty)
+			{
+				try
+				{
+					using (SqlConnection conn = new SqlConnection(_connectionString))
+					{
+						await conn.OpenAsync(stoppingToken);
+						int id = 0;
+						string sqlInsert = "Insert Into " + SQLConfig.WriteTable + " VALUES ('" + DateTime.Now + "'); " + " SELECT CONVERT(int,scope_identity())";
+						
+
+						// Insert
+						SqlCommand sqlCommand = new SqlCommand(sqlInsert, conn);
+						//var x = await sqlCommand.ExecuteScalarAsync(stoppingToken);
+						id = (int) await sqlCommand.ExecuteScalarAsync(stoppingToken);
+
+
+						// Delete
+						string sqlDelete = "DELETE FROM " + SQLConfig.WriteTable + " WHERE Id=" + id.ToString();
+						sqlCommand = new SqlCommand(sqlDelete, conn);
+						await sqlCommand.ExecuteScalarAsync(stoppingToken);
+
+						_statusWrite = EnumHealthStatus.Healthy;
+					}
+				}
+				catch (Exception ex)
+				{
+					msg += "  |  Write Msg: " + ex.Message;
+					_statusWrite = EnumHealthStatus.Failed;
+				}
+			}
+
+
+			// Figure out the overall status
+			if (_statusWrite > EnumHealthStatus.Healthy || _statusRead > EnumHealthStatus.Healthy)
+			{
+				if (_statusRead > EnumHealthStatus.Healthy) _statusOverall = _statusRead;
+				if (_statusWrite > _statusOverall) _statusOverall = _statusWrite;
+			}
+			else { _statusOverall = EnumHealthStatus.Healthy; }
+
+
+
+			return (EnumHealthStatus.Healthy, msg);
 		}
 	}
 }

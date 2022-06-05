@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SlugEnt.ResourceHealthChecker
@@ -46,7 +47,7 @@ namespace SlugEnt.ResourceHealthChecker
 		/// Performs the health check specific to the given HealthChecker.  
 		/// </summary>
 		/// <returns></returns>
-		public Task CheckHealth (bool force = false);
+		public Task CheckHealth (CancellationToken token,bool force = false);
 
 		public void DisplayHTML (StringBuilder sb);
 	}

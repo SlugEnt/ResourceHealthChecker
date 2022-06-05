@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -13,12 +15,23 @@ namespace SlugEnt.ResourceHealthChecker
 	/// </summary>
 	public class HealthCheckerFileSystem : AbstractHealthChecker
 	{
-		//private ILogger<HealthCheckerFileSystem> _logger;
+		private IFileSystem _fileSystem;	
 		private EnumHealthStatus                         _statusRead    = EnumHealthStatus.Failed;
 		private EnumHealthStatus                         _statusWrite   = EnumHealthStatus.Failed;
 		private EnumHealthStatus                         _statusOverall = EnumHealthStatus.Failed;
 
 
+		public HealthCheckerFileSystem (IFileSystem fileSystem, ILogger<HealthCheckerFileSystem> logger, string descriptiveName, HealthCheckerConfigFileSystem config) : base (descriptiveName,EnumHealthCheckerType.FileSystem, config, logger) {
+			_fileSystem = fileSystem;
+			CheckerName = "File System Permissions Checker";
+		}
+
+		public HealthCheckerFileSystem(ILogger<HealthCheckerFileSystem> logger, string descriptiveName, HealthCheckerConfigFileSystem config) : this (new FileSystem(),logger,descriptiveName, config)
+		{
+		}
+
+
+		/*
 		/// <summary>
 		/// Constructor
 		/// </summary>
@@ -37,7 +50,27 @@ namespace SlugEnt.ResourceHealthChecker
 			CheckerName = "File System Permissions Checker";
 			_logger.LogDebug("Health Checker File System Object Constructed:  [" + descriptiveName + "]  Path: [" + path + "]");
 		}
+		*/
 
+
+		/// <summary>
+		/// The Status of the Reach Check
+		/// </summary>
+		public EnumHealthStatus StatusRead {
+			get { return _statusRead; }
+			private set { _statusRead = value; }
+		}
+
+
+		/// <summary>
+		/// The Status of the Write Check
+		/// </summary>
+		public EnumHealthStatus StatusWrite
+		{
+			get { return _statusWrite; }
+			private set { _statusWrite = value; }
+		}
+		
 
 
 		/// <summary>
@@ -78,12 +111,13 @@ namespace SlugEnt.ResourceHealthChecker
 		/// Performs a file system health Check
 		/// </summary>
 		/// <returns></returns>
-		protected override async Task<(EnumHealthStatus, string)> PerformHealthCheck()
+		protected override async Task<(EnumHealthStatus, string)> PerformHealthCheck(CancellationToken stoppingToken)
 		{
 			// Go to the folder and attempt to perform actions
 			string message = "";
 
 
+			// Write File
 			if ( FileSystemConfig.CheckIsWriteble ) {
 				bool fileWritten = false;
 				string fullPath = "";
@@ -91,9 +125,9 @@ namespace SlugEnt.ResourceHealthChecker
 					// Try to create a file.
 					string fileName = "HealthChecker_" + new Guid().ToString();
 					fullPath = Path.Join(FileSystemConfig.FolderPath, fileName);
-					File.WriteAllText(fullPath, "Testing");
+						_fileSystem.File.WriteAllText(fullPath, "Testing");
 					fileWritten = true;
-					File.Delete(fullPath);
+						_fileSystem.File.Delete(fullPath);
 					_statusWrite = EnumHealthStatus.Healthy;
 				}
 				catch ( Exception ex ) {
@@ -111,10 +145,13 @@ namespace SlugEnt.ResourceHealthChecker
 			else
 				_statusWrite = EnumHealthStatus.NotRequested;
 
-
+			
 			if ( FileSystemConfig.CheckIsReadable ) {
-				if ( Directory.Exists(FileSystemConfig.FolderPath) )
+				if ( _fileSystem.Directory.Exists(FileSystemConfig.FolderPath) ) {
+					// Look For readfile.  If it exists, read 1st byte.  Otherwise try to read first byte from any file.
+
 					_statusRead = EnumHealthStatus.Healthy;
+				}
 				else {
 					message = "Unable to locate folder to check";
 					_statusRead = EnumHealthStatus.Failed;

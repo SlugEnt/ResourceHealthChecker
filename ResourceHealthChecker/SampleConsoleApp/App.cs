@@ -42,15 +42,28 @@ namespace SampleConsoleApp
 
 			//  File System Checker
 			ILogger<HealthCheckerFileSystem> hcfs = _serviceProvider.GetService<ILogger<HealthCheckerFileSystem>>();
-			HealthCheckerFileSystem fileSystemA = new HealthCheckerFileSystem(hcfs, "Temp Folder Read", @"C:\temp", true,false);
-			HealthCheckerFileSystem fileSystemB = new HealthCheckerFileSystem(hcfs, "Windows Folder ReadWrite", @"C:\windows", true, false);
+			HealthCheckerConfigFileSystem config = new HealthCheckerConfigFileSystem()
+			{
+				CheckIsWriteble = false,
+				CheckIsReadable = true,
+				FolderPath = @"C:\temp\HCR",
+			};
+			HealthCheckerFileSystem fileSystemA = new HealthCheckerFileSystem(hcfs, "Temp Folder Read",config );
+
+			HealthCheckerConfigFileSystem config2 = new HealthCheckerConfigFileSystem()
+			{
+				CheckIsWriteble = true,
+				CheckIsReadable = true,
+				FolderPath = @"C:\temp\HCW",
+			};
+			HealthCheckerFileSystem fileSystemB = new HealthCheckerFileSystem(hcfs, "Windows Folder ReadWrite", config2);
 			healthCheckProcessor.AddCheckItem(fileSystemA);
 			healthCheckProcessor.AddCheckItem(fileSystemB);
 
 
 			// SQL Server Checker
 			string connStr = "server=podmanb.slug.local;Database=AdventureWorks2019;User Id=AdvWorksUser;Password=Test;";
-			HealthCheckerConfigSQLServer dbConfig = new HealthCheckerConfigSQLServer(connStr,"Person.Person");
+			HealthCheckerConfigSQLServer dbConfig = new HealthCheckerConfigSQLServer(connStr);
 			dbConfig.ConnectionString = connStr;
 			ILogger<HealthCheckerSQLServer> hcsqlLogger = _serviceProvider.GetService<ILogger<HealthCheckerSQLServer>>();
 			HealthCheckerSQLServer sqlServer = new HealthCheckerSQLServer(hcsqlLogger, "Adventure Works", dbConfig);

@@ -11,10 +11,21 @@ namespace ResourceHealthChecker.SqlServer
 	/// Used to specific configuration information for connecting to a specific SQL Instance.
 	/// </summary>
 	public class HealthCheckerConfigSQLServer : IHealthCheckConfig {
+
+		/// <summary>
+		/// Creates a SQL Server HealthChecker configuration object.
+		/// </summary>
+		/// <param name="connectionString"></param>
+		/// <param name="readTable">By default is set to SlugEntHealthCheck</param>
+		/// <param name="writeTable">By default is set to SlugEntHealthCheck</param>
 		public HealthCheckerConfigSQLServer (string connectionString, string readTable = "Production.Location", string writeTable = "") {
 			ConnectionString = connectionString;
-			ReadTable = readTable;
-			WriteTable = writeTable;
+
+			if (readTable != string.Empty)
+				ReadTable = readTable;
+
+			if (writeTable != string.Empty)
+				WriteTable = writeTable;
 		}
 
 
@@ -31,7 +42,7 @@ namespace ResourceHealthChecker.SqlServer
 		/// <summary>
 		/// Name of table used that Insert Works (Write)
 		/// </summary>
-		public string WriteTable { get; set; } = "";
+		public string WriteTable { get; set; } = "SlugEntHealthCheck";
 
 		/// <summary>
 		/// UserName to connect as.  Ignored if ConnectionString is specified.
