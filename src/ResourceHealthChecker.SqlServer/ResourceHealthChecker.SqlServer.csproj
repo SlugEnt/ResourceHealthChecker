@@ -5,6 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyVersion>0.9.0</AssemblyVersion>
+    <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Authors>Daborg69</Authors>
   </PropertyGroup>
 
   <ItemGroup>
