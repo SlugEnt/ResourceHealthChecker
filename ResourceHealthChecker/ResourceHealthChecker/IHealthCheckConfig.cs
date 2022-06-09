@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace SlugEnt.ResourceHealthChecker
 {
-	public class IHealthCheckConfig
-	{
+	public class IHealthCheckConfig {
 		/// <summary>
 		/// How often the Check should be performed in seconds
 		/// </summary>
-		public int CheckIntervalSeconds { get; set; }
+		public int CheckIntervalSeconds { get; set; } = 60;
 	}
 }

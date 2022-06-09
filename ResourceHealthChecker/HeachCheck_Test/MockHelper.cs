@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Language.Flow;
 
-namespace HeachCheck_Test
+namespace HealthCheck_Test
 {
 	public static class MockHelper
 	{

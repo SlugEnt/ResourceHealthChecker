@@ -126,10 +126,7 @@ namespace SlugEnt.ResourceHealthChecker
 			StringBuilder sb = new(2048);
 			sb.Append("<html>");
 			foreach ( IHealthChecker healthChecker in _healthCheckerList ) {
-				string color = "grey";
-				if ( healthChecker.Status == EnumHealthStatus.Healthy ) color = "green";
-				else if ( healthChecker.Status == EnumHealthStatus.Degraded ) color = "orange";
-				else if ( healthChecker.Status == EnumHealthStatus.Failed ) color = "red";
+				string color = GetStatusColor(healthChecker.Status);
 				sb.Append("<hr style=\"width: 50 %; text - align:left; margin - left:0\">");
 				sb.Append("<H2 style=\"color:" + color + ";\">" + healthChecker.CheckerName + ":   " + healthChecker.Name + "    [" + healthChecker.Status.ToString() + "]</H2>");
 				healthChecker.DisplayHTML(sb);
@@ -139,6 +136,21 @@ namespace SlugEnt.ResourceHealthChecker
 			return sb;
 
 		}
+
+
+		/// <summary>
+		/// Returns the color that is associated with the HealthStatus passed in
+		/// </summary>
+		/// <param name="healthStatus"></param>
+		/// <returns></returns>
+		public static string GetStatusColor (EnumHealthStatus healthStatus) {
+			string color = "grey";
+			if (healthStatus == EnumHealthStatus.Healthy) color = "green";
+			else if (healthStatus == EnumHealthStatus.Degraded) color = "orange";
+			else if (healthStatus == EnumHealthStatus.Failed) color = "red";
+			return color;
+		}
+
 
 
 		/// <summary>

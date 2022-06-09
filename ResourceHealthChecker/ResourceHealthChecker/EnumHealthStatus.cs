@@ -12,9 +12,14 @@ namespace SlugEnt.ResourceHealthChecker
 	public enum EnumHealthStatus
 	{
 		/// <summary>
+		/// Initial Status.  It has not had a real check performed yet.
+		/// </summary>
+		NotCheckedYet = 0,
+
+		/// <summary>
 		/// The Health Check was not requested so it does not count
 		/// </summary>
-		NotRequested = 0,
+		NotRequested = 1,
 
 		/// <summary>
 		/// Service / API is Healthy and completely working

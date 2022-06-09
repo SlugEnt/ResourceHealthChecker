@@ -34,7 +34,6 @@ public class Program {
 
 			                                                  // Add Health check Processor to available services
 			                                                  .AddSingleton<HealthCheckProcessor>()
-
 			                                                  .AddHostedService<HealthCheckerBackgroundProcessor>())
 		                       .Build();
 

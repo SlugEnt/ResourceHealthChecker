@@ -29,11 +29,16 @@ namespace ResourceHealthChecker.SqlServer
 		}
 
 
+		public bool CheckReadTable { get; set; } = true;
+		public bool CheckWriteTable { get; set; } = true;
+
+
 		/// <summary>
 		/// The full connection string to use to connect to DB.  If this is anything other than empty then this is used to connect.
 		/// </summary>
 		public string ConnectionString { get; set; } = "";
 
+		public string Database { get; set; } = "";
 		/// <summary>
 		/// Name of the table used to validate that Select works (Read)
 		/// </summary>
