@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <AssemblyVersion>0.9.0</AssemblyVersion>
+    <Version>0.9.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

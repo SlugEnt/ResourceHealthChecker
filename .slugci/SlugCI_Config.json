@@ -1,0 +1,47 @@
+{
+  "ConfigStructureVersion": "0.33.0",
+  "UseCodeCoverage": true,
+  "CodeCoverageThreshold": 90,
+  "DeployProdRoot": null,
+  "DeployAlphaRoot": null,
+  "DeployBetaRoot": null,
+  "DeployDevRoot": null,
+  "DeployToVersionedFolder": true,
+  "DeployFolderUsesSemVer": true,
+  "DeployToAssemblyFolders": false,
+  "GitRemote": null,
+  "AngularDeployRootName": null,
+  "Projects": [
+    {
+      "Name": "ResourceHealthChecker",
+      "Deploy": "Nuget",
+      "HasTypeWriterScripts": false,
+      "IsTestProject": false
+    },
+    {
+      "Name": "SampleConsoleApp",
+      "Deploy": "None",
+      "HasTypeWriterScripts": false,
+      "IsTestProject": false
+    },
+    {
+      "Name": "ResourceHealthChecker.SqlServer",
+      "Deploy": "Nuget",
+      "HasTypeWriterScripts": false,
+      "IsTestProject": false
+    },
+    {
+      "Name": "HealthCheck_Test",
+      "Deploy": "None",
+      "HasTypeWriterScripts": false,
+      "IsTestProject": true
+    },
+    {
+      "Name": "ResourceHealthChecker.FileSystem",
+      "Deploy": "Nuget",
+      "HasTypeWriterScripts": false,
+      "IsTestProject": false
+    }
+  ],
+  "AngularProjects": []
+}
