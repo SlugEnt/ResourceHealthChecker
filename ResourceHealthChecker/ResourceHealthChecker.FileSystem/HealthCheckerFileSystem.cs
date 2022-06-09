@@ -107,6 +107,49 @@ namespace SlugEnt.ResourceHealthChecker
 		}
 
 
+
+		/// <summary>
+		/// This is the Write Folder Status Check 
+		/// </summary>
+		/// <param name="checkRead"></param>
+		/// <returns></returns>
+		private (EnumHealthStatus, string) WriteFileTest (bool checkRead = false) {
+			bool fileWritten = false;
+			string fullPath = "";
+			string message = "";
+			EnumHealthStatus status;
+
+			try {
+				// Try to create a file.
+				string fileName = "HealthChecker_" + Guid.NewGuid();
+				fullPath = Path.Join(FileSystemConfig.FolderPath, fileName);
+				_fileSystem.File.WriteAllText(fullPath, "Testing");
+				fileWritten = true;
+
+				// If checkread is set, we will attempt to read the file.
+				if ( checkRead ) {
+					_fileSystem.File.ReadAllBytes(fullPath);
+				}
+
+				_fileSystem.File.Delete(fullPath);
+				status = EnumHealthStatus.Healthy;
+			}
+			catch ( Exception ex ) {
+				if ( fileWritten ) {
+					_logger.LogError("File Written, but unable to be deleted - " + fullPath);
+					status = EnumHealthStatus.Degraded;
+					message = "Able to Write to folder, but not delete";
+				}
+				else {
+					status = EnumHealthStatus.Failed;
+					message = "Unable to write to folder";
+				}
+			}
+			return (status, message); 
+		}
+
+
+
 		/// <summary>
 		/// Performs a file system health Check
 		/// </summary>
@@ -119,42 +162,50 @@ namespace SlugEnt.ResourceHealthChecker
 
 			// Write File
 			if ( FileSystemConfig.CheckIsWriteble ) {
-				bool fileWritten = false;
-				string fullPath = "";
-				try {
-					// Try to create a file.
-					string fileName = "HealthChecker_" + new Guid().ToString();
-					fullPath = Path.Join(FileSystemConfig.FolderPath, fileName);
-						_fileSystem.File.WriteAllText(fullPath, "Testing");
-					fileWritten = true;
-						_fileSystem.File.Delete(fullPath);
-					_statusWrite = EnumHealthStatus.Healthy;
-				}
-				catch ( Exception ex ) {
-					if ( fileWritten ) {
-						_logger.LogError("File Written, but unable to be deleted - " + fullPath);
-						_statusWrite = EnumHealthStatus.Degraded;
-						message = "Able to Write to folder, but not delete";
-					}
-					else {
-						_statusWrite = EnumHealthStatus.Failed;
-						message = "Unable to write to folder";
-					}
-				}
+				(_statusWrite, message) = WriteFileTest();
 			}
 			else
 				_statusWrite = EnumHealthStatus.NotRequested;
 
 			
 			if ( FileSystemConfig.CheckIsReadable ) {
-				if ( _fileSystem.Directory.Exists(FileSystemConfig.FolderPath) ) {
-					// Look For readfile.  If it exists, read 1st byte.  Otherwise try to read first byte from any file.
+				try {
+					if ( _fileSystem.Directory.Exists(FileSystemConfig.FolderPath) ) {
+						// Look For readfile.  If it exists, read 1st byte.  Otherwise try to read first byte from any file.
+						string fileName = Path.Join(FileSystemConfig.FolderPath, FileSystemConfig.ReadFileName);
+						if ( !_fileSystem.File.Exists(fileName) ) {
+							// Find a file if we can
+							string [] files = _fileSystem.Directory.GetFiles(FileSystemConfig.FolderPath);
+							if ( files.Length > 0 )
+								fileName = files [0];
+							else {
+								fileName = string.Empty;
+							}
+						}
 
-					_statusRead = EnumHealthStatus.Healthy;
+						// Read a byte from file
+						if ( fileName != string.Empty ) {
+							using ( Stream fs = (Stream)_fileSystem.FileStream.Create(fileName, FileMode.Open) )
+								for ( int i = 0; i < 1; i++ )
+									fs.ReadByte();
+							_statusRead = EnumHealthStatus.Healthy;
+						}
+
+						// Since we cannot determine if we actually have Read access we return Degraded with message
+						else {
+							_statusRead = EnumHealthStatus.Degraded;
+							message = "No file found to read.  Cannot firmly determine if Read permission to files is enabled. See documentation for more info";
+						}
+						
+					}
+					else {
+						message = "Unable to locate folder to check";
+						_statusRead = EnumHealthStatus.Failed;
+					}
 				}
-				else {
-					message = "Unable to locate folder to check";
+				catch ( Exception ex ) {
 					_statusRead = EnumHealthStatus.Failed;
+					message = ex.Message;
 				}
 			}
 			else
@@ -168,7 +219,6 @@ namespace SlugEnt.ResourceHealthChecker
 			else { _statusOverall = EnumHealthStatus.Healthy;}
 
 
-			//_logger.LogDebug("HealthCheckerFileSystem [ " + Name + " ] Status: " + _statusOverall);
 			return (_statusOverall, message);
 		}
 	}

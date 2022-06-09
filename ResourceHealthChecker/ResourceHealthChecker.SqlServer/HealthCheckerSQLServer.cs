@@ -34,7 +34,12 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 			SqlConnectionStringBuilder sqlBuilder = new SqlConnectionStringBuilder(sqlConfig.ConnectionString);
 			sqlBuilder ["TrustServerCertificate"] = true;
 			sqlBuilder ["Connect Timeout"] = 2000; 
+
+			// Store some values from Connection string into Config
 			_connectionString = sqlBuilder.ConnectionString;
+			if (sqlConfig.Database == string.Empty) sqlConfig.Database = sqlBuilder.InitialCatalog;
+			if (sqlConfig.UserName == string.Empty) sqlConfig.UserName = sqlBuilder.UserID;
+			if (sqlConfig.Server == string.Empty) sqlConfig.Server = sqlBuilder.DataSource;
 
 
 			string msg;
@@ -62,7 +67,26 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 		/// <exception cref="NotImplementedException"></exception>
 		public override void DisplayHTML(StringBuilder sb)
 		{
-			throw new NotImplementedException();
+			sb.Append("<p>SQL Database: " + SQLConfig.Database + "</p>");
+			sb.Append("<p>  Server:  " + SQLConfig.Server + "</p>");
+
+			sb.Append("<h4>  Health Checks</h4>");
+			if ( SQLConfig.CheckReadTable ) {
+				string color = HealthCheckProcessor.GetStatusColor(_statusRead);
+				sb.Append("<p style =\"color:" + color + ";\">" + "  Read Table:  " + SQLConfig.ReadTable + "  [ " + _statusRead.ToString() + " ]");
+			}
+			else
+				sb.Append("<p>  Read Table:  Not Requested");
+			sb.Append("</p>");
+
+			if (SQLConfig.CheckWriteTable)
+			{
+				string color = HealthCheckProcessor.GetStatusColor(_statusWrite);
+				sb.Append("<p style =\"color:" + color + ";\">" + "  Write Table:  " + SQLConfig.WriteTable + "  [ " + _statusWrite.ToString() + " ]");
+			}
+			else
+				sb.Append("<p>  Write Table:  Not Requested");
+			sb.Append("</p>");
 		}
 
 

@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleConsoleApp", "SampleC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceHealthChecker.SqlServer", "ResourceHealthChecker.SqlServer\ResourceHealthChecker.SqlServer.csproj", "{7B27B218-2CB6-44B3-A8FB-A58AE1935F22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeachCheck_Test", "HeachCheck_Test\HeachCheck_Test.csproj", "{63857219-2056-4C08-815A-B34438FA6F72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheck_Test", "HeachCheck_Test\HealthCheck_Test.csproj", "{63857219-2056-4C08-815A-B34438FA6F72}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceHealthChecker.FileSystem", "ResourceHealthChecker.FileSystem\ResourceHealthChecker.FileSystem.csproj", "{7FEB8185-679B-4C9B-A22E-D7AC5D0496AC}"
 EndProject

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace SlugEnt.ResourceHealthChecker
 			Config = healthCheckConfig;
 			HealthCheckerType = type;
 			_logger = logger;
-			_status = EnumHealthStatus.Unknown;
+			_status = EnumHealthStatus.NotCheckedYet;
 			_lastStatusCheck = DateTimeOffset.Now;
 			_nextStatusCheck = DateTimeOffset.Now;
 			_healthRecords = new List<HealthEntryRecord>();
@@ -53,6 +54,7 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		public EnumHealthStatus Status {
 			get { return _status; }
+			protected set { _status = value; }
 		}
 
 
@@ -70,6 +72,7 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		public DateTimeOffset NextStatusCheck {
 			get { return _nextStatusCheck; }
+			internal set { _nextStatusCheck = value; }
 		}
 		
 
@@ -132,6 +135,10 @@ namespace SlugEnt.ResourceHealthChecker
 
 			EnumHealthStatus newStatus;
 			string message;
+
+			// If this is first check, set to Unknown so we know we are checking it.
+			if ( Status == EnumHealthStatus.NotCheckedYet ) Status = EnumHealthStatus.Unknown;
+
 			(newStatus, message) = await PerformHealthCheck(token);
 			if ( newStatus != _status ) {
 				HealthEntryRecord healthEntryRecord = new (newStatus, message);

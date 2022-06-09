@@ -13,5 +13,6 @@ namespace SlugEnt.ResourceHealthChecker
 		RabbitMQ = 2,
 		Redis = 3,
 		ExternalAPI = 4,
+		Dummy = 254,
 	}
 }
