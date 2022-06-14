@@ -44,6 +44,12 @@ namespace SlugEnt.ResourceHealthChecker
 
 
 		/// <summary>
+		/// The Title / Name of the Health Checker
+		/// </summary>
+		public string ShortTitle { get; }
+
+
+		/// <summary>
 		/// Performs the health check specific to the given HealthChecker.  
 		/// </summary>
 		/// <returns></returns>

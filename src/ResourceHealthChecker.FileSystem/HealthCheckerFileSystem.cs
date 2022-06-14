@@ -15,17 +15,31 @@ namespace SlugEnt.ResourceHealthChecker
 	/// </summary>
 	public class HealthCheckerFileSystem : AbstractHealthChecker
 	{
-		private IFileSystem _fileSystem;	
+		private readonly IFileSystem _fileSystem;	
 		private EnumHealthStatus                         _statusRead    = EnumHealthStatus.Failed;
 		private EnumHealthStatus                         _statusWrite   = EnumHealthStatus.Failed;
 		private EnumHealthStatus                         _statusOverall = EnumHealthStatus.Failed;
 
-
+		/// <summary>
+		/// Constructs a new File System Health Checker.
+		/// </summary>
+		/// <param name="fileSystem">If mocking the file system, then this is the mock File System, otherwise it is the real file system</param>
+		/// <param name="logger">Where logs are sent</param>
+		/// <param name="descriptiveName">Name for this File System Check - usually indicates what is being checked, for instance, Web Downloads</param>
+		/// <param name="config">The Health checker Config for the file System Check.</param>
 		public HealthCheckerFileSystem (IFileSystem fileSystem, ILogger<HealthCheckerFileSystem> logger, string descriptiveName, HealthCheckerConfigFileSystem config) : base (descriptiveName,EnumHealthCheckerType.FileSystem, config, logger) {
 			_fileSystem = fileSystem;
 			CheckerName = "File System Permissions Checker";
+			IsReady = true;
 		}
 
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="logger"></param>
+		/// <param name="descriptiveName"></param>
+		/// <param name="config"></param>
 		public HealthCheckerFileSystem(ILogger<HealthCheckerFileSystem> logger, string descriptiveName, HealthCheckerConfigFileSystem config) : this (new FileSystem(),logger,descriptiveName, config)
 		{
 		}
@@ -88,8 +102,6 @@ namespace SlugEnt.ResourceHealthChecker
 		public override void DisplayHTML(StringBuilder sb) {
 			sb.Append("<p>FilePath: " + FileSystemConfig.FolderPath + "</p>");
 
-			string message;
-
 			sb.Append("<p>Is Readable Check: ");
 			if ( FileSystemConfig.CheckIsReadable )
 				sb.Append(_statusRead.ToString());
@@ -136,13 +148,13 @@ namespace SlugEnt.ResourceHealthChecker
 			}
 			catch ( Exception ex ) {
 				if ( fileWritten ) {
-					_logger.LogError("File Written, but unable to be deleted - " + fullPath);
+					_logger.LogError("File Written, but unable to be deleted  [ {FilePath} ]" , fullPath);
 					status = EnumHealthStatus.Degraded;
-					message = "Able to Write to folder, but not delete";
+					message = "Able to Write to folder, but not delete.  Error:" + ex.Message;
 				}
 				else {
 					status = EnumHealthStatus.Failed;
-					message = "Unable to write to folder";
+					message = "Unable to write to folder.  Error: " + ex.Message;
 				}
 			}
 			return (status, message); 
@@ -154,6 +166,7 @@ namespace SlugEnt.ResourceHealthChecker
 		/// Performs a file system health Check
 		/// </summary>
 		/// <returns></returns>
+#pragma		warning disable CS1998
 		protected override async Task<(EnumHealthStatus, string)> PerformHealthCheck(CancellationToken stoppingToken)
 		{
 			// Go to the folder and attempt to perform actions
@@ -221,5 +234,7 @@ namespace SlugEnt.ResourceHealthChecker
 
 			return (_statusOverall, message);
 		}
+#pragma warning restore
 	}
+
 }

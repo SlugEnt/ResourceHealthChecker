@@ -36,6 +36,13 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		Degraded = 200,
 
+
+		/// <summary>
+		/// The Health Checker never completed initial setup or configuration successfully.
+		/// </summary>
+		NotReady = 250,
+
+
 		/// <summary>
 		/// Service is completely failed.
 		/// </summary>
