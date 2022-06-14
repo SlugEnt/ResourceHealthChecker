@@ -15,8 +15,10 @@ namespace SlugEnt.ResourceHealthChecker
 		private DateTimeOffset          _lastStatusCheck;
 		private DateTimeOffset          _nextStatusCheck;
 		private bool                    _isRunning;
-		private List<HealthEntryRecord> _healthRecords;
-		protected ILogger _logger;
+		private bool                    _isReady;
+		private readonly List<HealthEntryRecord> _healthRecords;
+		protected ILogger               _logger;
+
 
 		public AbstractHealthChecker (string name, EnumHealthCheckerType type, IHealthCheckConfig healthCheckConfig, ILogger logger) {
 			Name = name;
@@ -28,6 +30,7 @@ namespace SlugEnt.ResourceHealthChecker
 			_nextStatusCheck = DateTimeOffset.Now;
 			_healthRecords = new List<HealthEntryRecord>();
 			_isRunning = false;
+			_isReady = false;
 		}
 
 
@@ -47,6 +50,15 @@ namespace SlugEnt.ResourceHealthChecker
 		/// Configuration object for this HealthChecker
 		/// </summary>
 		public IHealthCheckConfig Config { get; set; }
+
+
+		/// <summary>
+		/// If true, the Health Checker has passed initial setup and is ready to perform health Checks.  False, indicates some type of startup or config issues
+		/// </summary>
+		public bool IsReady {
+			get { return _isReady; }
+			protected set { _isReady = value; }
+		}
 
 
 		/// <summary>
@@ -139,24 +151,34 @@ namespace SlugEnt.ResourceHealthChecker
 			// If this is first check, set to Unknown so we know we are checking it.
 			if ( Status == EnumHealthStatus.NotCheckedYet ) Status = EnumHealthStatus.Unknown;
 
-			(newStatus, message) = await PerformHealthCheck(token);
+
+			// Ensure the checker is ready.
+			if (IsReady)
+				(newStatus, message) = await PerformHealthCheck(token);
+			else {
+				newStatus = EnumHealthStatus.NotReady;
+				message = "Health Checker never completed initial configuration or setup successfully.  Health Check cannot be run.";
+			}
+
 			if ( newStatus != _status ) {
 				HealthEntryRecord healthEntryRecord = new (newStatus, message);
 				_healthRecords.Add(healthEntryRecord);
 				_status = newStatus;
 
 				// Lets log it.
-				if (newStatus == EnumHealthStatus.Healthy)
-					_logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered into a HEALTHY State.  Message {@message}", message);
+				if ( newStatus == EnumHealthStatus.Healthy ) {
+					//_logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered into a HEALTHY State.  Message {@message}", message,);
+					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]",ShortTitle,newStatus);
+				}
 				else if (newStatus == EnumHealthStatus.Failed) 
-					_logger.LogError("Health Check: " + ShortTitle() + "|  has entered the FAILED State.  Message {@message}", message);
+					_logger.LogError("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", ShortTitle, newStatus);
 				else if (newStatus == EnumHealthStatus.Degraded)
-					_logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered the DEGRADED State.  Message {@message}", message);
+					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", ShortTitle, newStatus);
 				else if (newStatus == EnumHealthStatus.Unknown)
-					_logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered the UNKNOWN State.  Message {@message}", message);
-				else _logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered an undefined State.  Message { @message}", message);
+					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", ShortTitle, newStatus);
+				else _logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", ShortTitle, newStatus);
 
-				
+
 			}
 			else {
 				_healthRecords[^1].Increment();
@@ -184,6 +206,7 @@ namespace SlugEnt.ResourceHealthChecker
 				if (lastIndex != -1) _healthRecords.RemoveRange(0,lastIndex);
 			}
 
+			_lastStatusCheck = DateTimeOffset.Now;
 			_isRunning = false;
 		}
 
@@ -199,8 +222,8 @@ namespace SlugEnt.ResourceHealthChecker
 		/// Displays a Short Title for this Checker
 		/// </summary>
 		/// <returns></returns>
-		protected string ShortTitle () {
-			return CheckerName + " [" + Name + "]";
+		public string ShortTitle {
+			get { return CheckerName + " [" + Name + "]"; }
 		}
 	}
 }

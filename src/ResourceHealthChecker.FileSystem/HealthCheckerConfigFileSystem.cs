@@ -10,12 +10,11 @@ namespace SlugEnt.ResourceHealthChecker
 	/// <summary>
 	/// Configuration settings for the FileSystem health check.
 	/// </summary>
-	public class HealthCheckerConfigFileSystem : IHealthCheckConfig
-	{
+	public class HealthCheckerConfigFileSystem : IHealthCheckConfig {
 		/// <summary>
 		/// The fully qualified path to be checked
 		/// </summary>
-		public string FolderPath { get; set; }
+		public string FolderPath { get; set; } = "";
 
 		/// <summary>
 		/// If true then the Health Check requires that the folder be readable by the process

@@ -15,6 +15,7 @@ namespace HealthCheck_Test
 		{
 		
 			CheckerName = "Dummy Checker";
+			IsReady = true;
 		}
 
 		public override void DisplayHTML(StringBuilder sb) {
@@ -24,7 +25,7 @@ namespace HealthCheck_Test
 		protected override async Task<(EnumHealthStatus, string)> PerformHealthCheck(CancellationToken stoppingToken) {
 			HCTest_Config hcConfig = (HCTest_Config)Config;
 
-			if ( hcConfig.RunDelay > 0 ) await Task.Delay(hcConfig.RunDelay);
+			if ( hcConfig.RunDelay > 0 ) await Task.Delay(hcConfig.RunDelay,stoppingToken);
 
 
 			// We use this to force different Status return codes

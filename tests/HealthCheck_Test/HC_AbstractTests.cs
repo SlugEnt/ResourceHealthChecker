@@ -10,13 +10,13 @@ using NUnit.Framework;
 using SlugEnt;
 using SlugEnt.ResourceHealthChecker;
 
+
+#pragma warning disable CS8618
 namespace HealthCheck_Test
 {
 	[TestFixture]
 	public class HC_AbstractTests
-
 	{
-		private UniqueKeys _uniqueKey;
 		private ILogger<HCTest_Checker> _logger;
 		private CancellationToken _cancellationToken;
 
@@ -24,8 +24,6 @@ namespace HealthCheck_Test
 		[OneTimeSetUp]
 		public void InitialSetUp()
 		{
-			_uniqueKey = new UniqueKeys(".");
-
 			// The Health Checkers cannot create a logger themselves, so we create it for them.
 			_logger = Mock.Of<ILogger<HCTest_Checker>>();
 
@@ -51,13 +49,13 @@ namespace HealthCheck_Test
 		[TestCase(EnumHealthStatus.NotCheckedYet)]
 		public async Task PerformHealth_StatusSet (EnumHealthStatus expectedStatus) {
 			// A. Setup
-			HCTest_Config config = new HCTest_Config()
+			HCTest_Config config = new ()
 			{
 				ExpectedMessageOutput = "Ooops",
 				ExpectedOutput = expectedStatus,
 			};
 
-			HCTest_Checker checker = new HCTest_Checker(_logger, "Dummy", config);
+			HCTest_Checker checker = new (_logger, "Dummy", config);
 
 
 			// B. Test
@@ -66,10 +64,10 @@ namespace HealthCheck_Test
 
 			// C. Validate
 			if (expectedStatus != EnumHealthStatus.NotCheckedYet && expectedStatus != EnumHealthStatus.Unknown)
-				Assert.AreEqual(expectedStatus,checker.Status);
+				Assert.AreEqual(expectedStatus,checker.Status,"A10:");
 			// NotCheckedYet should never be returned.  Unknown is returned.
 			else 
-				Assert.AreEqual(EnumHealthStatus.Healthy,checker.Status);
+				Assert.AreEqual(EnumHealthStatus.Healthy,checker.Status,"A20:");
 
 		}
 
@@ -83,19 +81,20 @@ namespace HealthCheck_Test
 		public async Task IsRunningIsSet_WhileRunning()
 		{
 			// A. Setup
-			HCTest_Config config = new HCTest_Config()
+			HCTest_Config config = new ()
 			{
 				ExpectedMessageOutput = "",
 				ExpectedOutput = EnumHealthStatus.Healthy,
 				RunDelay = 100,
 			};
 
-			HCTest_Checker checker = new HCTest_Checker(_logger, "Dummy", config);
+			HCTest_Checker checker = new (_logger, "Dummy", config);
 
 
 			// B. Test
+#pragma warning disable CS4014
 			checker.CheckHealth(_cancellationToken);
-
+#pragma warning restore CS4014
 
 			// C. Validate
 			Assert.IsTrue(checker.IsRunning,"A10");
@@ -110,19 +109,20 @@ namespace HealthCheck_Test
 		public async Task IsRunningFalse_WhenFinished()
 		{
 			// A. Setup
-			HCTest_Config config = new HCTest_Config()
+			HCTest_Config config = new ()
 			{
 				ExpectedMessageOutput = "",
 				ExpectedOutput = EnumHealthStatus.Healthy,
 				RunDelay = 100,
 			};
 
-			HCTest_Checker checker = new HCTest_Checker(_logger, "Dummy", config);
+			HCTest_Checker checker = new (_logger, "Dummy", config);
 
 
 			// B. Test
+#pragma warning  disable CS4014
 			checker.CheckHealth(_cancellationToken);
-
+#pragma warning restore CS4014
 
 			// C. Validate
 			Assert.IsTrue(checker.IsRunning, "A10");
@@ -141,13 +141,13 @@ namespace HealthCheck_Test
 			// A. Setup
 
 			CancellationToken cancellationToken = CancellationToken.None;
-			HCTest_Config config = new HCTest_Config()
+			HCTest_Config config = new ()
 			{
 				ExpectedMessageOutput = "",
 				ExpectedOutput = EnumHealthStatus.Healthy,
 			};
 
-			HCTest_Checker checker = new HCTest_Checker(_logger, "Dummy", config);
+			HCTest_Checker checker = new (_logger, "Dummy", config);
 
 
 			// B. Test
@@ -160,7 +160,7 @@ namespace HealthCheck_Test
 			await checker.CheckHealth(cancellationToken);
 			checker.NextStatusCheck = DateTimeOffset.Now.AddHours(-1);
 			
-			checker.CheckHealth(cancellationToken);
+			await checker.CheckHealth(cancellationToken);
 
 
 			// C. Validate
@@ -190,13 +190,13 @@ namespace HealthCheck_Test
 			// A. Setup
 
 			CancellationToken cancellationToken = CancellationToken.None;
-			HCTest_Config config = new HCTest_Config()
+			HCTest_Config config = new ()
 			{
 				ExpectedMessageOutput = "",
 				ExpectedOutput = EnumHealthStatus.Healthy,
 			};
 
-			HCTest_Checker checker = new HCTest_Checker(_logger, "Dummy", config);
+			HCTest_Checker checker = new (_logger, "Dummy", config);
 
 
 			// B. Test
@@ -210,7 +210,7 @@ namespace HealthCheck_Test
 			// Need to manipulate Next Run time and expected status
 			checker.NextStatusCheck = DateTimeOffset.Now.AddHours(-1);
 			config.RunNumberResult = (int)EnumHealthStatus.Healthy;
-			checker.CheckHealth(cancellationToken);
+			await checker.CheckHealth(cancellationToken);
 
 
 			// C. Validate
@@ -240,16 +240,16 @@ namespace HealthCheck_Test
 		/// </summary>
 		/// <returns></returns>
 		[Test]
-		public async Task HealthCheckerType_IsSet () {
+		public void HealthCheckerType_IsSet () {
 
 			// A. Setup
-			HCTest_Config config = new HCTest_Config()
+			HCTest_Config config = new ()
 			{
 				ExpectedMessageOutput = "",
 				ExpectedOutput = EnumHealthStatus.Healthy,
 			};
 
-			HCTest_Checker checker = new HCTest_Checker(_logger, "Dummy", config);
+			HCTest_Checker checker = new (_logger, "Dummy", config);
 
 
 			// B. Test
@@ -276,15 +276,13 @@ namespace HealthCheck_Test
 		[TestCase(EnumHealthStatus.NotCheckedYet)]
 		public async Task NextStatusCheck_IsSet (EnumHealthStatus expectedStatus) {
 			// A. Setup
-
-			CancellationToken cancellationToken = CancellationToken.None;
-			HCTest_Config config = new HCTest_Config()
+			HCTest_Config config = new ()
 			{
 				ExpectedMessageOutput = "",
 				ExpectedOutput = expectedStatus,
 			};
 
-			HCTest_Checker checker = new HCTest_Checker(_logger, "Dummy", config);
+			HCTest_Checker checker = new (_logger, "Dummy", config);
 
 			DateTimeOffset currentNextStatus = checker.NextStatusCheck;
 

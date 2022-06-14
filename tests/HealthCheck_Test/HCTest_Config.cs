@@ -13,7 +13,8 @@ namespace HealthCheck_Test
 		/// This is the Health Status that will be output from the PerformHealthCheck method.
 		/// </summary>
 		public EnumHealthStatus ExpectedOutput { get; set; }
-		public string ExpectedMessageOutput { get; set; }
+
+		public string ExpectedMessageOutput { get; set; } = "";
 
 		/// <summary>
 		/// Amount of MS to simulate we are running.

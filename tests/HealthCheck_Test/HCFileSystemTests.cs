@@ -13,6 +13,8 @@ using Moq;
 using SlugEnt;
 using SlugEnt.ResourceHealthChecker;
 
+#pragma warning disable CS8618
+
 namespace HealthCheck_Test
 {
 	using XFS = MockUnixSupport;
@@ -59,13 +61,13 @@ namespace HealthCheck_Test
 		/// <param name="expectedHealthStatus"></param>
 		/// <returns></returns>
 		[Test]
-		[TestCase(true,EnumHealthStatus.Healthy)]
-		[TestCase(false,EnumHealthStatus.Failed)]
-		public async Task WriteBasicSuccess (bool isDirectoryWriteable, EnumHealthStatus expectedHealthStatus)
+		[TestCase(EnumHealthStatus.Healthy)]
+		[TestCase(EnumHealthStatus.Failed)]
+		public async Task WriteBasicSuccess ( EnumHealthStatus expectedHealthStatus)
 		{
 			// A. Setup
 			CancellationToken cancellationToken = CancellationToken.None;
-			MockFileSystem fileSystem = new MockFileSystem();
+			MockFileSystem fileSystem = new ();
 
 			string dirName = _uniqueKey.GetKey("Write." + expectedHealthStatus.ToString());
 			IDirectoryInfo directoryInfo = fileSystem.Directory.CreateDirectory(dirName);
@@ -74,13 +76,13 @@ namespace HealthCheck_Test
 				fileSystem.File.SetAttributes(dirName,FileAttributes.ReadOnly);
 			
 
-			HealthCheckerConfigFileSystem config = new HealthCheckerConfigFileSystem()
+			HealthCheckerConfigFileSystem config = new ()
 			{
 				CheckIsWriteble = true,
 				CheckIsReadable = false,
 				FolderPath = directoryInfo.FullName,
 			};
-			HealthCheckerFileSystem healthChecker = new HealthCheckerFileSystem(fileSystem, _logger, dirName, config);
+			HealthCheckerFileSystem healthChecker = new (fileSystem, _logger, dirName, config);
 
 
 			// B. Test
@@ -112,7 +114,7 @@ namespace HealthCheck_Test
 			CancellationToken cancellationToken = CancellationToken.None;
 			string dirName = _uniqueKey.GetKey("Read." + expectedHealthStatus.ToString());
 
-			HealthCheckerConfigFileSystem config = new HealthCheckerConfigFileSystem()
+			HealthCheckerConfigFileSystem config = new ()
 			{
 				CheckIsWriteble = false,
 				CheckIsReadable = true,
@@ -125,7 +127,7 @@ namespace HealthCheck_Test
 			IFileSystem fileSystem = mock.Object;
 			fileSystem.Directory.CreateDirectory(dirName);
 
-			HealthCheckerFileSystem healthChecker = new HealthCheckerFileSystem(fileSystem, _logger, dirName, config);
+			HealthCheckerFileSystem healthChecker = new (fileSystem, _logger, dirName, config);
 
 
 			// B. Test
@@ -160,7 +162,7 @@ namespace HealthCheck_Test
 			if (!Directory.Exists(testDir)) Directory.CreateDirectory(testDir);
 
 
-			HealthCheckerConfigFileSystem config = new HealthCheckerConfigFileSystem()
+			HealthCheckerConfigFileSystem config = new ()
 			{
 				CheckIsWriteble = false,
 				CheckIsReadable = true,
@@ -175,7 +177,7 @@ namespace HealthCheck_Test
 
 
 			// B. Test
-			HealthCheckerFileSystem healthChecker = new HealthCheckerFileSystem(_logger, testDir, config);
+			HealthCheckerFileSystem healthChecker = new (_logger, testDir, config);
 			await healthChecker.CheckHealth(cancellationToken);
 
 
@@ -201,7 +203,7 @@ namespace HealthCheck_Test
 			CancellationToken cancellationToken = CancellationToken.None;
 			string dirName = _uniqueKey.GetKey("Read." + expectedHealthStatus.ToString());
 
-			HealthCheckerConfigFileSystem config = new HealthCheckerConfigFileSystem()
+			HealthCheckerConfigFileSystem config = new ()
 			{
 				CheckIsWriteble = false,
 				CheckIsReadable = true,
@@ -210,7 +212,7 @@ namespace HealthCheck_Test
 
 
 
-			MockFileSystem fileSystem1 = new MockFileSystem();
+			MockFileSystem fileSystem1 = new ();
 
 			var mock = new Mock<IFileSystem>();
 			mock.Setup(x => x.Directory.GetFiles(It.IsAny<string>())).Throws(new UnauthorizedAccessException("Permission Denied"));
@@ -258,7 +260,7 @@ namespace HealthCheck_Test
 
 
 
-			HealthCheckerFileSystem healthChecker = new HealthCheckerFileSystem(fileSystem, _logger, dirName, config);
+			HealthCheckerFileSystem healthChecker = new (fileSystem, _logger, dirName, config);
 
 
 			// B. Test
@@ -276,3 +278,4 @@ namespace HealthCheck_Test
 
 	}
 }
+#pragma  warning restore
