@@ -41,6 +41,12 @@
       "Deploy": "Nuget",
       "HasTypeWriterScripts": false,
       "IsTestProject": false
+    },
+    {
+      "Name": "ResourceHealthChecker.RabbitMQ",
+      "Deploy": "Nuget",
+      "HasTypeWriterScripts": false,
+      "IsTestProject": false
     }
   ],
   "AngularProjects": []

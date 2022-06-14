@@ -15,8 +15,8 @@ namespace SlugEnt.ResourceHealthChecker
 	/// </summary>
 	public class HealthCheckProcessor
 	{
-		private List<IHealthChecker>          _healthCheckerList;
-		private ILogger<HealthCheckProcessor> _logger;
+		private readonly List<IHealthChecker>          _healthCheckerList;
+		private readonly ILogger<HealthCheckProcessor> _logger;
 		private int _checkIntervalMS = 5000;
 		private Action<int> _actionCheckInterval;
 
@@ -56,14 +56,16 @@ namespace SlugEnt.ResourceHealthChecker
 		/// <param name="healthChecker"></param>
 		public void AddCheckItem (IHealthChecker healthChecker) {
 			_healthCheckerList.Add(healthChecker);
-			_logger.LogInformation("HealthChecker added: " + healthChecker.CheckerName  + " [ " + healthChecker.Name + " ]");
+			_logger.LogInformation("HealthChecker Added:  [ {HealthChecker} ]" , healthChecker.ShortTitle);
 		}
-		
+
 
 		/// <summary>
 		/// Performs all Health Checks 
 		/// </summary>
 		/// <returns></returns>
+#pragma warning disable CS1998
+#pragma warning disable CS4014
 		public async Task CheckHealth () {
 			_logger.LogDebug("Starting HealthCheckProcessor cycle");
 			foreach ( var healthChecker in _healthCheckerList ) {
@@ -71,6 +73,8 @@ namespace SlugEnt.ResourceHealthChecker
 				healthChecker.CheckHealth(CancellationToken);
 			}
 		}
+#pragma warning restore CS1998
+#pragma warning restore CS4014
 
 
 
