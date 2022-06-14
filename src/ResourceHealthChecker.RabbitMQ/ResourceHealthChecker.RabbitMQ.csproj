@@ -1,27 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.2.0</AssemblyVersion>
     <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>
-    <Authors>Daborg69</Authors>
+    <RootNamespace>SlugEnt.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IO.Abstractions" Version="17.0.15" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.3.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ResourceHealthChecker\ResourceHealthChecker.csproj" />
   </ItemGroup>
-
-
+	
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>HealthCheck_Test</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
-
 </Project>

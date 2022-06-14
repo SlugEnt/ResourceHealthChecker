@@ -11,15 +11,24 @@ using ResourceHealthChecker.SqlServer;
 
 namespace SlugEnt.ResourceHealthChecker.SqlServer
 {
+	/// <summary>
+	/// Provides Health Checking services on a SQL Database
+	/// </summary>
 	public class HealthCheckerSQLServer : AbstractHealthChecker {
 		//private ILogger<HealthCheckerSQLServer> _logger;
-		private string _connectionString;
+		private readonly string _connectionString;
 		private EnumHealthStatus _statusRead = EnumHealthStatus.Failed;
 		private EnumHealthStatus _statusWrite = EnumHealthStatus.Failed;
 		private EnumHealthStatus _statusOverall = EnumHealthStatus.Failed;
 
 
-
+		/// <summary>
+		/// Constructs a SQL Server Health Checker
+		/// </summary>
+		/// <param name="logger">Where to Log to</param>
+		/// <param name="descriptiveName">Name of this health checker</param>
+		/// <param name="sqlConfig">The SQL Configuration file for the Health Checker</param>
+		/// <exception cref="ApplicationException"></exception>
 		public HealthCheckerSQLServer (ILogger<HealthCheckerSQLServer> logger, string descriptiveName, HealthCheckerConfigSQLServer sqlConfig) : base(descriptiveName, EnumHealthCheckerType.Database, sqlConfig,logger) {
 
 			if ( sqlConfig.ConnectionString == string.Empty )
@@ -31,7 +40,7 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 
 
 			// Lets build a complete Connection string we can use.
-			SqlConnectionStringBuilder sqlBuilder = new SqlConnectionStringBuilder(sqlConfig.ConnectionString);
+			SqlConnectionStringBuilder sqlBuilder = new (sqlConfig.ConnectionString);
 			sqlBuilder ["TrustServerCertificate"] = true;
 			sqlBuilder ["Connect Timeout"] = 2000; 
 
@@ -41,13 +50,9 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 			if (sqlConfig.UserName == string.Empty) sqlConfig.UserName = sqlBuilder.UserID;
 			if (sqlConfig.Server == string.Empty) sqlConfig.Server = sqlBuilder.DataSource;
 
+			_logger.LogDebug("SQL Constructed Connection String:  [ {SQLConnection} ]" , _connectionString );
 
-			string msg;
-			if ( sqlConfig.ConnectionString != string.Empty )
-				msg = sqlConfig.ConnectionString;
-			else
-				msg = sqlConfig.Server + "/" + sqlConfig.Instance; 
-			_logger.LogDebug("Health Checker SQL Server Instance Constructed:  [" + descriptiveName + "] -  " + msg);
+			IsReady = true;
 		}
 
 
@@ -100,10 +105,10 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 
 			if ( SQLConfig.ReadTable != string.Empty ) {
 				try {
-					using ( SqlConnection conn = new SqlConnection(_connectionString) ) {
+					using ( SqlConnection conn = new (_connectionString) ) {
 						await conn.OpenAsync(stoppingToken);
 						string sql = "Select Top 1 * From " + SQLConfig.ReadTable;
-						SqlCommand sqlCommand = new SqlCommand(sql, conn);
+						SqlCommand sqlCommand = new (sql, conn);
 						
 						await sqlCommand.ExecuteNonQueryAsync(stoppingToken);
 						_statusRead = EnumHealthStatus.Healthy;
@@ -113,8 +118,6 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 					msg = "Read Msg: " + ex.Message;
 					_statusRead = EnumHealthStatus.Failed;
 				}
-
-				//return (readStatus, msg);
 			}
 
 
@@ -122,7 +125,7 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 			{
 				try
 				{
-					using (SqlConnection conn = new SqlConnection(_connectionString))
+					using (SqlConnection conn = new (_connectionString))
 					{
 						await conn.OpenAsync(stoppingToken);
 						int id = 0;
@@ -130,14 +133,14 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 						
 
 						// Insert
-						SqlCommand sqlCommand = new SqlCommand(sqlInsert, conn);
+						SqlCommand sqlCommand = new (sqlInsert, conn);
 						//var x = await sqlCommand.ExecuteScalarAsync(stoppingToken);
 						id = (int) await sqlCommand.ExecuteScalarAsync(stoppingToken);
 
 
 						// Delete
 						string sqlDelete = "DELETE FROM " + SQLConfig.WriteTable + " WHERE Id=" + id.ToString();
-						sqlCommand = new SqlCommand(sqlDelete, conn);
+						sqlCommand = new (sqlDelete, conn);
 						await sqlCommand.ExecuteScalarAsync(stoppingToken);
 
 						_statusWrite = EnumHealthStatus.Healthy;
