@@ -19,12 +19,6 @@
       "IsTestProject": false
     },
     {
-      "Name": "SampleConsoleApp",
-      "Deploy": "None",
-      "HasTypeWriterScripts": false,
-      "IsTestProject": false
-    },
-    {
       "Name": "ResourceHealthChecker.SqlServer",
       "Deploy": "Nuget",
       "HasTypeWriterScripts": false,
