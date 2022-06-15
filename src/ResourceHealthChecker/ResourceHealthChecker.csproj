@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>1.2.0</AssemblyVersion>
-    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.1</AssemblyVersion>
+    <Version>1.2.1</Version>
     <PackageId>SlugEnt.$(AssemblyName)</PackageId>
     <Authors>daborg69</Authors>
     <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>

@@ -47,6 +47,12 @@
       "Deploy": "Nuget",
       "HasTypeWriterScripts": false,
       "IsTestProject": false
+    },
+    {
+      "Name": "ResourceHealthChecker.SampleConsole",
+      "Deploy": "None",
+      "HasTypeWriterScripts": false,
+      "IsTestProject": false
     }
   ],
   "AngularProjects": []
