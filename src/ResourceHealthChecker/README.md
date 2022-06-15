@@ -76,7 +76,7 @@ public async Task ExecuteAsync(CancellationToken cancellationToken = default)
 
 
 	// Add a SQL Server Checker.
-	string connStr = "***REMOVED***";
+	string connStr = "server=podmanb.slug.local;Database=AdventureWorks2019;User Id=AdvWorksUser;Password=Test;";
 	HealthCheckerConfigSQLServer dbConfig = new HealthCheckerConfigSQLServer(connStr);
 	dbConfig.ConnectionString = connStr;
 	ILogger<HealthCheckerSQLServer> hcsqlLogger = _serviceProvider.GetService<ILogger<HealthCheckerSQLServer>>();

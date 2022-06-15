@@ -142,7 +142,7 @@ namespace SlugEnt.ResourceHealthChecker.RabbitMQ {
 				return (EnumHealthStatus.Failed, ex.Message);
 			}
 
-			return (EnumHealthStatus.Degraded,"");
+			return (EnumHealthStatus.Healthy,"");
 		}
 	}
 }

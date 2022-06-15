@@ -11,7 +11,7 @@ using ResourceHealthChecker.SqlServer;
 using SlugEnt.ResourceHealthChecker.RabbitMQ;
 using SlugEnt.ResourceHealthChecker.SqlServer;
 
-namespace SampleConsoleApp
+namespace SlugEnt.ResourceHealthChecker.SampleConsole
 {
 	internal class App
 	{
@@ -29,7 +29,7 @@ namespace SampleConsoleApp
 
 		public async Task ExecuteAsync(CancellationToken cancellationToken = default)
 		{
-			Console.WriteLine("Starting the exec cycle for the app");
+			System.Console.WriteLine("Starting the exec cycle for the app");
 
 			cancellationToken.Register(StopService);
 			TimeSpan sleepTime = TimeSpan.FromSeconds(5);
@@ -67,9 +67,10 @@ namespace SampleConsoleApp
 
 
 			// SQL Server Checker
-			string connStr = "***REMOVED***";
-			connStr = "***REMOVED***";
-			HealthCheckerConfigSQLServer dbConfig = new (connStr);
+			string connStr = _configuration ["ConnectionStrings:AdventureDB"];
+			if ( connStr == null ) throw new ApplicationException("Cannot find connection string for AdventureWorks Database");
+
+			HealthCheckerConfigSQLServer dbConfig = new (connStr,"Production.Location");
 			dbConfig.ConnectionString = connStr;
 			ILogger<HealthCheckerSQLServer>? hcsqlLogger = _serviceProvider.GetService<ILogger<HealthCheckerSQLServer>>();
 			if ( hcsqlLogger == null ) throw new ApplicationException("Unable to locate Logger for HealthCheckerSQLServer");
@@ -79,10 +80,11 @@ namespace SampleConsoleApp
 
 
 			// RabbitMQ Checker
+			string mqConnection = _configuration ["MQ"];
+			if ( mqConnection == null ) throw new ApplicationException("Unable to locate MQ Configuration");
 			HealthCheckerConfigRabbitMQ mqConfig = new ()
 			{
-				URL = "***REMOVED***"
-				//URL = "***REMOVED***"
+				URL = mqConnection,
 			};
 			ILogger <HealthCheckerRabbitMQ>? mqLogger = _serviceProvider.GetService<ILogger<HealthCheckerRabbitMQ>>();
 			if ( mqLogger == null ) throw new ApplicationException("Unable to locate the HealthCheckerRabbitMQ Logger service");
@@ -106,7 +108,7 @@ namespace SampleConsoleApp
 
 				// Lets just check the overall status
 				EnumHealthStatus healthStatus = healthCheckProcessor.Status;
-				Console.WriteLine("The current status of all checks is: " + healthStatus.ToString());
+				System.Console.WriteLine("The current status of all checks is: " + healthStatus.ToString());
 
 				await Task.Delay(sleepTime, cancellationToken);
 			}

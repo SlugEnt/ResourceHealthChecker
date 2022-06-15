@@ -103,7 +103,7 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 		protected override async Task<(EnumHealthStatus, string)> PerformHealthCheck(CancellationToken stoppingToken) {
 			string msg = "";
 
-			if ( SQLConfig.ReadTable != string.Empty ) {
+			if ( SQLConfig.CheckReadTable ) {
 				try {
 					using ( SqlConnection conn = new (_connectionString) ) {
 						await conn.OpenAsync(stoppingToken);
@@ -121,7 +121,7 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 			}
 
 
-			if (SQLConfig.WriteTable != string.Empty)
+			if (SQLConfig.CheckWriteTable)
 			{
 				try
 				{
@@ -164,7 +164,7 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 
 
 
-			return (EnumHealthStatus.Healthy, msg);
+			return (_statusOverall, msg);
 		}
 	}
 }
