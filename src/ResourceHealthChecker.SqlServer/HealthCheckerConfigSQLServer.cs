@@ -18,7 +18,7 @@ namespace ResourceHealthChecker.SqlServer
 		/// <param name="connectionString"></param>
 		/// <param name="readTable">By default is set to SlugEntHealthCheck</param>
 		/// <param name="writeTable">By default is set to SlugEntHealthCheck</param>
-		public HealthCheckerConfigSQLServer (string connectionString, string readTable = "Production.Location", string writeTable = "") {
+		public HealthCheckerConfigSQLServer (string connectionString, string readTable = "", string writeTable = "") {
 			ConnectionString = connectionString;
 
 			if (readTable != string.Empty)
@@ -29,7 +29,15 @@ namespace ResourceHealthChecker.SqlServer
 		}
 
 
+		/// <summary>
+		/// If true then the Read table validation will occur
+		/// </summary>
 		public bool CheckReadTable { get; set; } = true;
+
+
+		/// <summary>
+		/// If true then the Write table validation will occur
+		/// </summary>
 		public bool CheckWriteTable { get; set; } = true;
 
 
@@ -38,9 +46,15 @@ namespace ResourceHealthChecker.SqlServer
 		/// </summary>
 		public string ConnectionString { get; set; } = "";
 
-		public string Database { get; set; } = "";
+
 		/// <summary>
-		/// Name of the table used to validate that Select works (Read)
+		/// Database to connect to
+		/// </summary>
+		public string Database { get; set; } = "";
+
+
+		/// <summary>
+		/// Name of the table used to validate that Select works (Read).  There is purposefully no default.  You must specify one
 		/// </summary>
 		public string ReadTable { get; set; } = "";
 

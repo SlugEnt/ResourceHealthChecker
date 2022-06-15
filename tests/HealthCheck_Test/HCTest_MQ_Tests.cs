@@ -95,7 +95,7 @@ namespace HealthCheck_Test
 				// Try to run Health Check
 				await mq.CheckHealth(_cancellationToken);
 				Assert.AreEqual(EnumHealthStatus.NotReady,mq.Status,"A30:");
-				//Assert.Throws<ArgumentException>(() => new HealthCheckerRabbitMQ(_logger, "mqError", configMQ),"A20:");
+				
 			}
 			
 		}

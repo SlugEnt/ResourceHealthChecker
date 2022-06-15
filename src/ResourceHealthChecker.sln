@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceHealthChecker", "ResourceHealthChecker\ResourceHealthChecker.csproj", "{3B0FC6A1-0D73-4052-9D95-9D0D41570D61}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleConsoleApp", "SampleConsoleApp\SampleConsoleApp.csproj", "{7405BA88-3D62-4EC7-87F4-62B9A0BE8163}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceHealthChecker.SampleConsole", "SampleConsoleApp\ResourceHealthChecker.SampleConsole.csproj", "{7405BA88-3D62-4EC7-87F4-62B9A0BE8163}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceHealthChecker.SqlServer", "ResourceHealthChecker.SqlServer\ResourceHealthChecker.SqlServer.csproj", "{2B66DA45-8E61-40A1-A69A-BFB9BCC2A5DA}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheck_Test", "..\test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceHealthChecker.FileSystem", "ResourceHealthChecker.FileSystem\ResourceHealthChecker.FileSystem.csproj", "{F662B8CF-FFC5-427C-8821-071AB7CFC82E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceHealthChecker.RabbitMQ", "ResourceHealthChecker.RabbitMQ\ResourceHealthChecker.RabbitMQ.csproj", "{4FBB0529-A194-4FBD-A07E-3D5FC1CFE84D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceHealthChecker.RabbitMQ", "ResourceHealthChecker.RabbitMQ\ResourceHealthChecker.RabbitMQ.csproj", "{4FBB0529-A194-4FBD-A07E-3D5FC1CFE84D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
