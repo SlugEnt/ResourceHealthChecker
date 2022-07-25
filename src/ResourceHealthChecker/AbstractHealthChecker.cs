@@ -121,6 +121,9 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		public int MaxHealthDays { get; set; } = 375;
 
+
+		public abstract string FullTitle { get; }
+
 		/// <summary>
 		/// Executes the Health Check routine for the specific Health Checker (Query database, Write File, etc)  Should return true if everything worked
 		/// </summary>
@@ -171,12 +174,12 @@ namespace SlugEnt.ResourceHealthChecker
 					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]",ShortTitle,newStatus);
 				}
 				else if (newStatus == EnumHealthStatus.Failed) 
-					_logger.LogError("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", ShortTitle, newStatus);
+					_logger.LogError("Health Check: {HealthChecker} has changed status to [{HealthStatus}] --> {HealthDetails}", FullTitle, newStatus);
 				else if (newStatus == EnumHealthStatus.Degraded)
-					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", ShortTitle, newStatus);
+					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", FullTitle, newStatus);
 				else if (newStatus == EnumHealthStatus.Unknown)
-					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", ShortTitle, newStatus);
-				else _logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", ShortTitle, newStatus);
+					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", FullTitle, newStatus);
+				else _logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", FullTitle, newStatus);
 
 
 			}

@@ -22,6 +22,23 @@ namespace HealthCheck_Test
 			sb.Append("<p>HCTest_Checker</p>");
 		}
 
+		/// <summary>
+		/// Displays the Full information
+		/// </summary>
+		public override string FullTitle
+		{
+			get
+			{
+				string access = "";
+				
+
+				return access + " | " + ShortTitle + "  -->  " + ((HCTest_Config) Config).ExpectedMessageOutput;
+				
+			}
+		}
+
+
+
 		protected override async Task<(EnumHealthStatus, string)> PerformHealthCheck(CancellationToken stoppingToken) {
 			HCTest_Config hcConfig = (HCTest_Config)Config;
 

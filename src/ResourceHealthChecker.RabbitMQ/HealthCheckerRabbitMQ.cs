@@ -113,7 +113,10 @@ namespace SlugEnt.ResourceHealthChecker.RabbitMQ {
 		}
 
 
-
+		/// <summary>
+		/// Displays as HTML
+		/// </summary>
+		/// <param name="sb"></param>
 		public override void DisplayHTML (StringBuilder sb) {
 			sb.Append("<p>  MQ Instance: " + MQConfig.Instance + "</p>");
 			sb.Append("<p>  Server:  " + MQConfig.ServerIP + "</p>");
@@ -121,6 +124,19 @@ namespace SlugEnt.ResourceHealthChecker.RabbitMQ {
 			sb.Append("<h4>  Health Checks</h4>");
 
 		}
+
+
+		/// <summary>
+		/// Displays the MQ information
+		/// </summary>
+		public override string FullTitle
+		{
+			get
+			{
+				return ShortTitle + "  -->  " + MQConfig.Instance;
+			}
+		}
+
 
 
 		/// <summary>

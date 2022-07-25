@@ -66,6 +66,23 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 
 
 		/// <summary>
+		/// Displays the SQL Server information
+		/// </summary>
+		public override string FullTitle
+		{
+			get
+			{
+				string access = "";
+				if (SQLConfig.CheckReadTable) access = "Read";
+				if (SQLConfig.CheckWriteTable) access += "Write";
+
+				return access + " | " + ShortTitle + "  -->  " + SQLConfig.Server + ":" + SQLConfig.Database;
+			}
+		}
+
+
+
+		/// <summary>
 		/// Displays the Status in HTML Format.
 		/// </summary>
 		/// <param name="sb"></param>

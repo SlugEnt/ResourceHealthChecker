@@ -45,28 +45,7 @@ namespace SlugEnt.ResourceHealthChecker
 		}
 
 
-		/*
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="logger"></param>
-		/// <param name="descriptiveName">A Descriptive name for this checker</param>
-		/// <param name="path">Fully Qualified file system path to check</param>
-		/// <param name="checkIsReadable">If checker should check for Reading permission</param>
-		/// <param name="checkisWriteable">If checker should check for Writing permission</param>
-		public HealthCheckerFileSystem (ILogger<HealthCheckerFileSystem> logger,string descriptiveName, string path, bool checkIsReadable = true, bool checkisWriteable = true) : base(descriptiveName, EnumHealthCheckerType.FileSystem,
-		                                                                                              new HealthCheckerConfigFileSystem()) {
-			HealthCheckerConfigFileSystem Config = new HealthCheckerConfigFileSystem();
-			FileSystemConfig.CheckIsReadable = checkIsReadable;
-			FileSystemConfig.CheckIsWriteble = checkisWriteable;
-			FileSystemConfig.FolderPath = path;
-			_logger = logger;
-			CheckerName = "File System Permissions Checker";
-			_logger.LogDebug("Health Checker File System Object Constructed:  [" + descriptiveName + "]  Path: [" + path + "]");
-		}
-		*/
-
-
+		
 		/// <summary>
 		/// The Status of the Reach Check
 		/// </summary>
@@ -84,7 +63,20 @@ namespace SlugEnt.ResourceHealthChecker
 			get { return _statusWrite; }
 			private set { _statusWrite = value; }
 		}
-		
+
+
+		/// <summary>
+		/// Displays the File Path information
+		/// </summary>
+		public override string FullTitle {
+			get {
+				string access = "";
+				if ( FileSystemConfig.CheckIsReadable ) access = "Read";
+				if ( FileSystemConfig.CheckIsWriteble ) access += "Write";
+
+				return access + " | " + ShortTitle + "  -->  " + FileSystemConfig.FolderPath;
+			}
+		}
 
 
 		/// <summary>

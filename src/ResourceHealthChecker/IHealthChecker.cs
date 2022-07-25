@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace SlugEnt.ResourceHealthChecker
 {
+	/// <summary>
+	/// Interface for a HealthChecker
+	/// </summary>
 	public interface IHealthChecker {
 		/// <summary>
 		/// Name of this health checker
@@ -23,12 +26,26 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		public IHealthCheckConfig Config { get; set; }
 
+		/// <summary>
+		/// Current Status of this Health Checker
+		/// </summary>
 		public EnumHealthStatus Status { get; }
 
+		/// <summary>
+		/// When Status last checked
+		/// </summary>
 		public DateTimeOffset LastStatusCheck { get; }
 
+
+		/// <summary>
+		/// Scheduled time for next health check
+		/// </summary>
 		public DateTimeOffset NextStatusCheck { get; }
 
+
+		/// <summary>
+		/// List of recent Health Checks
+		/// </summary>
 		public List<HealthEntryRecord> HealthEntries { get;  }
 
 		/// <summary>
@@ -50,11 +67,21 @@ namespace SlugEnt.ResourceHealthChecker
 
 
 		/// <summary>
+		/// The full name of this checker - includes the details about the item being checked
+		/// </summary>
+		public string FullTitle { get; }
+
+
+		/// <summary>
 		/// Performs the health check specific to the given HealthChecker.  
 		/// </summary>
 		/// <returns></returns>
 		public Task CheckHealth (CancellationToken token,bool force = false);
 
+		/// <summary>
+		/// Displays this Health Checks information as HTML
+		/// </summary>
+		/// <param name="sb"></param>
 		public void DisplayHTML (StringBuilder sb);
 	}
 }
