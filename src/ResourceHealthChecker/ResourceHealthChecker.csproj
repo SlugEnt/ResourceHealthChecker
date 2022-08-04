@@ -15,8 +15,8 @@
     <RepositoryUrl>https://github.com/SlugEnt/ResourceHealthChecker</RepositoryUrl>
     <PackageTags>Health Resource</PackageTags>
     <PackageReleaseNotes>Added Documentation to package output.  a few bug fixes</PackageReleaseNotes>
-    <PackageLicenseFile>C:\A_Dev\SlugEnt\ResourceHealthChecker\LICENSE</PackageLicenseFile>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,8 +38,11 @@
 	  </None>
 	</ItemGroup>
 
+
+
 	<ItemGroup>
 	  <Folder Include="Properties\" />
 	</ItemGroup>
+
 
 </Project>
