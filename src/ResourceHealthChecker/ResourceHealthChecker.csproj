@@ -7,6 +7,16 @@
     <PackageId>SlugEnt.$(AssemblyName)</PackageId>
     <Authors>daborg69</Authors>
     <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>
+    <Company>SlugEnt</Company>
+    <Description>Provides the core ResourceHealthChecking capability which allows applications to automatically check on the resources they need.</Description>
+    <Copyright>Scott Herrmann 2022</Copyright>
+    <PackageProjectUrl>https://github.com/SlugEnt/ResourceHealthChecker</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/SlugEnt/ResourceHealthChecker</RepositoryUrl>
+    <PackageTags>Health Resource</PackageTags>
+    <PackageReleaseNotes>Added Documentation to package output.  a few bug fixes</PackageReleaseNotes>
+    <PackageLicenseFile>C:\A_Dev\SlugEnt\ResourceHealthChecker\LICENSE</PackageLicenseFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +29,17 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>HealthCheck_Test</_Parameter1>
 		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Properties\" />
 	</ItemGroup>
 
 </Project>

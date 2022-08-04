@@ -174,7 +174,7 @@ namespace SlugEnt.ResourceHealthChecker
 					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]",ShortTitle,newStatus);
 				}
 				else if (newStatus == EnumHealthStatus.Failed) 
-					_logger.LogError("Health Check: {HealthChecker} has changed status to [{HealthStatus}] --> {HealthDetails}", FullTitle, newStatus);
+					_logger.LogError("Health Check: {HealthChecker} has changed status to [{HealthStatus}] --> {HealthDetails}", FullTitle, newStatus,message);
 				else if (newStatus == EnumHealthStatus.Degraded)
 					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]", FullTitle, newStatus);
 				else if (newStatus == EnumHealthStatus.Unknown)

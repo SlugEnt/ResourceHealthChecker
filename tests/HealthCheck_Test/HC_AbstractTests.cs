@@ -297,7 +297,6 @@ namespace HealthCheck_Test
 			Assert.Greater(checker.NextStatusCheck,currentNextStatus,"A20");
 		}
 
-
-
+		
 	}
 }

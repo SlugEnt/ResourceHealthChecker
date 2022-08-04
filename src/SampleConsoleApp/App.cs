@@ -53,7 +53,7 @@ namespace SlugEnt.ResourceHealthChecker.SampleConsole
 				FolderPath = @"C:\temp\HCR",
 			};
 			HealthCheckerFileSystem fileSystemA = new (hcfs, "Temp Folder Read",config );
-
+			 
 			HealthCheckerConfigFileSystem config2 = new ()
 			{
 				CheckIsWriteble = true,

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using ResourceHealthChecker;
 
 namespace SlugEnt.ResourceHealthChecker
 {
@@ -19,6 +20,7 @@ namespace SlugEnt.ResourceHealthChecker
 		private readonly ILogger<HealthCheckProcessor> _logger;
 		private int _checkIntervalMS = 5000;
 		private Action<int> _actionCheckInterval;
+		private bool _isStartingUp;
 
 
 		/// <summary>
@@ -29,8 +31,17 @@ namespace SlugEnt.ResourceHealthChecker
 		{
 			_healthCheckerList = new List<IHealthChecker>();
 			_logger = logger;
+			ProcessingStage = EnumHealthCheckProcessorStage.Constructed;
 		}
 
+
+		/// <summary>
+		/// Tells at what point in the life cycle of the Health Processor it is currently at.
+		/// </summary>
+		public EnumHealthCheckProcessorStage ProcessingStage {
+			get;
+			private set;
+		}
 
 		/// <summary>
 		/// How often the check processor runs in milliseconds.  Note the actual timer loop cycle is in HealthCheckerBackgroundProcessor. It reads this value so it cab be changed dynamically by the owner app.
@@ -67,6 +78,12 @@ namespace SlugEnt.ResourceHealthChecker
 #pragma warning disable CS1998
 #pragma warning disable CS4014
 		public async Task CheckHealth () {
+			// Make sure we are in a valid state
+			if ( ProcessingStage == EnumHealthCheckProcessorStage.Constructed | ProcessingStage == EnumHealthCheckProcessorStage.Finished ) {
+				_logger.LogDebug("Check Health did not check anything due to HealthCheckProcessor not being in a valid checking stage");
+				return;
+			}
+
 			_logger.LogDebug("Starting HealthCheckProcessor cycle");
 			foreach ( var healthChecker in _healthCheckerList ) {
 				// We do not await the call, we want to kick it off and let it do its thing.
@@ -83,7 +100,9 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		public EnumHealthStatus Status {
 			get {
-				EnumHealthStatus status = EnumHealthStatus.Healthy;
+				//if ( !IsStarted && _isStartingUp) return EnumHealthStatus.Unknown;
+
+				EnumHealthStatus status = EnumHealthStatus.NotCheckedYet;
 				foreach ( IHealthChecker healthChecker in _healthCheckerList ) {
 					if ( healthChecker.Status > status ) status = healthChecker.Status;
 				}
@@ -98,21 +117,30 @@ namespace SlugEnt.ResourceHealthChecker
 		/// Still True?????   Note this only sets the IsStarted boolean to true, the BackgroundProcessor once it sees IsStarted = true then starts the actual process.
 		/// </summary>
 		public async Task Start () {
+			_logger.LogDebug("HealthCheckProcessor Start Method has been entered");
+			_isStartingUp = true;
+			ProcessingStage = EnumHealthCheckProcessorStage.Initializing;
 			await CheckHealth();
 
 			// So, the checks might be ongoing still.  We continue checking the Status until it's Healthy OR InitialStartup Time is exceeded
-			int sleepTime = 100;
+			int sleepTime = 3000;
 			int maxWaitTime = 30000;
 			DateTime maxWait = DateTime.Now.AddMilliseconds(maxWaitTime);
 			while ( true ) {
 				Thread.Sleep(sleepTime);
 				if ( Status == EnumHealthStatus.Healthy ) {
+					ProcessingStage = EnumHealthCheckProcessorStage.Processing;
 					IsStarted = true;
 					break;
 				}
-				if ( DateTime.Now > maxWait ) break;
+
+				if ( DateTime.Now > maxWait ) {
+					ProcessingStage = EnumHealthCheckProcessorStage.FailedToStart;
+					break;
+				}
+				await CheckHealth();
 			}
-			
+			_logger.LogDebug("HealthCheckProcessor Startup is exiting with a status of {HealthCheckProcessorStatus}", ProcessingStage.ToString());
 		}
 
 

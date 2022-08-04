@@ -42,13 +42,15 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 			// Lets build a complete Connection string we can use.
 			SqlConnectionStringBuilder sqlBuilder = new (sqlConfig.ConnectionString);
 			sqlBuilder ["TrustServerCertificate"] = true;
-			sqlBuilder ["Connect Timeout"] = 2000; 
+			sqlBuilder ["Connect Timeout"] = 5; 
 
 			// Store some values from Connection string into Config
 			_connectionString = sqlBuilder.ConnectionString;
 			if (sqlConfig.Database == string.Empty) sqlConfig.Database = sqlBuilder.InitialCatalog;
 			if (sqlConfig.UserName == string.Empty) sqlConfig.UserName = sqlBuilder.UserID;
 			if (sqlConfig.Server == string.Empty) sqlConfig.Server = sqlBuilder.DataSource;
+			sqlConfig.ConnectionString = _connectionString;
+			
 
 			_logger.LogDebug("SQL Constructed Connection String:  [ {SQLConnection} ]" , _connectionString );
 

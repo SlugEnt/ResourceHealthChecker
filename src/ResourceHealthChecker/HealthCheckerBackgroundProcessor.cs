@@ -56,7 +56,19 @@ namespace ResourceHealthChecker
 			// Now that we have the Cancellation token - give it to HealthCheckProcessor
 			_healthCheckProcessor.CancellationToken = stoppingToken;
 
-			
+			// Wait for HealthCheckProcessor Startup to occur
+			int loopCtr = 0;
+			while ( !stoppingToken.IsCancellationRequested ) {
+				loopCtr++;
+				if ( _healthCheckProcessor.ProcessingStage != EnumHealthCheckProcessorStage.Processing ) {
+					if (loopCtr > 6 ) 
+						_logger.LogWarning("Still Waiting for HealthCheckProcessor to enter the post startup phase.");
+					await Task.Delay(5000, stoppingToken);
+				}
+				if ( _healthCheckProcessor.ProcessingStage > EnumHealthCheckProcessorStage.Processing ) return;
+			}
+
+
 			// Begin processing
 			while (!stoppingToken.IsCancellationRequested)
 			{
