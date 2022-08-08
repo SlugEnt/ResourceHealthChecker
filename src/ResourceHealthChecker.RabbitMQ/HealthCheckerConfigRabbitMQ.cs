@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+namespace SlugEnt.ResourceHealthChecker.RabbitMQ;
 
-namespace SlugEnt.ResourceHealthChecker.RabbitMQ
-{
 	/// <summary>
 	/// Stores the configuration information for connecting to an MQ instance.  It will accept a full URL OR the individual components and build the url from them.
 	/// </summary>
-	public class HealthCheckerConfigRabbitMQ : IHealthCheckConfig {
+	public class HealthCheckerConfigRabbitMQ : HealthCheckConfigBase, IConfigHealthChecksConfig {
 		/// <summary>
 		/// The full URL to connect to.  The engine uses the URL OR the user, password, server and instance to build a URL
 		/// </summary>
@@ -40,9 +35,6 @@ namespace SlugEnt.ResourceHealthChecker.RabbitMQ
 		/// </summary>
 		public bool IsEncrypted { get; set; }
 
-		
-
-
 	}
 
-}
+

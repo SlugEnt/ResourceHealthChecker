@@ -6,10 +6,15 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ResourceHealthChecker;
 
 namespace SlugEnt.ResourceHealthChecker
 {
+	/// <summary>
+	/// The base functionality all HealthCheckers inherit from.
+	/// </summary>
 	public abstract class AbstractHealthChecker : IHealthChecker {
 		protected EnumHealthStatus        _status;
 		private DateTimeOffset          _lastStatusCheck;
@@ -20,10 +25,11 @@ namespace SlugEnt.ResourceHealthChecker
 		protected ILogger               _logger;
 
 
-		public AbstractHealthChecker (string name, EnumHealthCheckerType type, IHealthCheckConfig healthCheckConfig, ILogger logger) {
-			Name = name;
-			Config = healthCheckConfig;
-			HealthCheckerType = type;
+		/// <summary>
+		/// Constructor used during Configuration from AppSettings.
+		/// </summary>
+		/// <param name="logger"></param>
+		public AbstractHealthChecker (ILogger logger) {
 			_logger = logger;
 			_status = EnumHealthStatus.NotCheckedYet;
 			_lastStatusCheck = DateTimeOffset.Now;
@@ -31,6 +37,21 @@ namespace SlugEnt.ResourceHealthChecker
 			_healthRecords = new List<HealthEntryRecord>();
 			_isRunning = false;
 			_isReady = false;
+		}
+
+
+		/// <summary>
+		/// Normal Constructor
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="type"></param>
+		/// <param name="healthCheckConfig"></param>
+		/// <param name="logger"></param>
+		public AbstractHealthChecker (string name, EnumHealthCheckerType type, HealthCheckConfigBase healthCheckConfig, ILogger logger) : this(logger){
+			
+			Name = name;
+			Config = healthCheckConfig;
+			HealthCheckerType = type;
 		}
 
 
@@ -49,7 +70,7 @@ namespace SlugEnt.ResourceHealthChecker
 		/// <summary>
 		/// Configuration object for this HealthChecker
 		/// </summary>
-		public IHealthCheckConfig Config { get; set; }
+		public HealthCheckConfigBase Config { get; set; }
 
 
 		/// <summary>
@@ -122,6 +143,9 @@ namespace SlugEnt.ResourceHealthChecker
 		public int MaxHealthDays { get; set; } = 375;
 
 
+		/// <summary>
+		/// The full title of the Health Checker.  Usually type + name
+		/// </summary>
 		public abstract string FullTitle { get; }
 
 		/// <summary>
@@ -189,7 +213,7 @@ namespace SlugEnt.ResourceHealthChecker
 
 
 			// Set next check interval
-			_nextStatusCheck = DateTimeOffset.Now.AddSeconds(Config.CheckIntervalSeconds);  
+			_nextStatusCheck = DateTimeOffset.Now.AddSeconds(Config.CheckInterval);  
 
 
 			// See if Age or Capacity limits have been reached on the health records list and remove any that meet criteria.
@@ -219,6 +243,17 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		/// <returns></returns>
 		public abstract void  DisplayHTML (StringBuilder sb);
+
+
+		/// <summary>
+		/// Reads the common properties of Config items for the ConfigHealthChecks configuration objects
+		/// </summary>
+		/// <param name="configuration"></param>
+		/// <param name="configurationSectionRoot"></param>
+		public virtual void SetupFromConfig (IConfiguration configuration, string configurationSectionRoot) {
+			this.Config.CheckInterval = configuration.GetSection(configurationSectionRoot + ":Config:CheckInterval").Get<int>();
+			this.Config.IsEnabled = configuration.GetSection(configurationSectionRoot + ":Config:IsEnabled").Get<bool>();
+		}
 
 
 		/// <summary>

@@ -6,19 +6,32 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ResourceHealthChecker;
 
 namespace SlugEnt.ResourceHealthChecker
 {
 	/// <summary>
 	/// Performs a Health Check on a File System
 	/// </summary>
-	public class HealthCheckerFileSystem : AbstractHealthChecker
+	public class HealthCheckerFileSystem : AbstractHealthChecker, IFileSystemHealthChecker, IHealthChecker
 	{
 		private readonly IFileSystem _fileSystem;	
 		private EnumHealthStatus                         _statusRead    = EnumHealthStatus.Failed;
 		private EnumHealthStatus                         _statusWrite   = EnumHealthStatus.Failed;
 		private EnumHealthStatus                         _statusOverall = EnumHealthStatus.Failed;
+
+
+		/// <summary>
+		/// Constructor used when building object from Configuration
+		/// </summary>
+		/// <param name="logger"></param>
+		public HealthCheckerFileSystem (ILogger<HealthCheckerFileSystem> logger) : base(logger) {
+			_fileSystem = new FileSystem();
+			CheckerName = "File System Permissions Checker";
+			Config = new HealthCheckerConfigFileSystem();
+		}
 
 		/// <summary>
 		/// Constructs a new File System Health Checker.
@@ -43,8 +56,7 @@ namespace SlugEnt.ResourceHealthChecker
 		public HealthCheckerFileSystem(ILogger<HealthCheckerFileSystem> logger, string descriptiveName, HealthCheckerConfigFileSystem config) : this (new FileSystem(),logger,descriptiveName, config)
 		{
 		}
-
-
+		
 		
 		/// <summary>
 		/// The Status of the Reach Check
@@ -72,7 +84,7 @@ namespace SlugEnt.ResourceHealthChecker
 			get {
 				string access = "";
 				if ( FileSystemConfig.CheckIsReadable ) access = "Read";
-				if ( FileSystemConfig.CheckIsWriteble ) access += "Write";
+				if ( FileSystemConfig.CheckIsWriteable ) access += "Write";
 
 				return access + " | " + ShortTitle + "  -->  " + FileSystemConfig.FolderPath;
 			}
@@ -102,7 +114,7 @@ namespace SlugEnt.ResourceHealthChecker
 			sb.Append("</p>");
 
 			sb.Append("<p>Is Writeable Check: ");
-			if (FileSystemConfig.CheckIsWriteble)
+			if (FileSystemConfig.CheckIsWriteable)
 				sb.Append(_statusWrite.ToString());
 			else
 				sb.Append(" Not Requested");
@@ -166,7 +178,7 @@ namespace SlugEnt.ResourceHealthChecker
 
 
 			// Write File
-			if ( FileSystemConfig.CheckIsWriteble ) {
+			if ( FileSystemConfig.CheckIsWriteable ) {
 				(_statusWrite, message) = WriteFileTest();
 			}
 			else
@@ -225,6 +237,23 @@ namespace SlugEnt.ResourceHealthChecker
 
 
 			return (_statusOverall, message);
+		}
+
+
+		/// <summary>
+		/// Reads the common properties of Config items for the ConfigHealthChecks configuration objects
+		/// </summary>
+		/// <param name="configuration"></param>
+		/// <param name="configurationSectionRoot"></param>
+		public override void SetupFromConfig (IConfiguration configuration, string configurationSectionRoot) {
+			base.SetupFromConfig(configuration, configurationSectionRoot);
+
+			// Read the File Specific config
+			this.FileSystemConfig.FolderPath = configuration.GetSection(configurationSectionRoot + ":Config:FolderPath").Get<string>();
+			this.FileSystemConfig.ReadFileName = configuration.GetSection(configurationSectionRoot + ":Config:ReadFileName").Get<string>();
+			this.FileSystemConfig.CheckIsReadable = configuration.GetSection(configurationSectionRoot + ":Config:CheckIsReadable").Get<bool>();
+			this.FileSystemConfig.CheckIsWriteable = configuration.GetSection(configurationSectionRoot + ":Config:CheckIsWriteable").Get<bool>();
+			IsReady = true;
 		}
 #pragma warning restore
 	}

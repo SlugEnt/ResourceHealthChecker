@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SlugEnt.ResourceHealthChecker;
+﻿using SlugEnt.ResourceHealthChecker;
 
 namespace HealthCheck_Test
 {
-	public  class HCTest_Config : IHealthCheckConfig
+	public  class HCTest_Config : HealthCheckConfigBase
 	{
 		/// <summary>
 		/// This is the Health Status that will be output from the PerformHealthCheck method.

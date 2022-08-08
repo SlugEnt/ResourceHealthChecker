@@ -4,6 +4,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
@@ -13,6 +14,24 @@ namespace SlugEnt.ResourceHealthChecker.RabbitMQ {
 	/// </summary>
 	public class HealthCheckerRabbitMQ : AbstractHealthChecker {
 
+
+		/// <summary>
+		/// Constructor used when building object from Configuration
+		/// </summary>
+		/// <param name="logger"></param>
+		public HealthCheckerRabbitMQ(ILogger<HealthCheckerRabbitMQ> logger) : base(logger)
+		{
+			CheckerName = "Rabbit MQ Health Checker";
+			Config = new HealthCheckerConfigRabbitMQ();
+		}
+
+
+		/// <summary>
+		/// Builds a RabbitMQ Health Checker
+		/// </summary>
+		/// <param name="logger"></param>
+		/// <param name="descriptiveName"></param>
+		/// <param name="mqConfig"></param>
 		public HealthCheckerRabbitMQ (ILogger<HealthCheckerRabbitMQ> logger, string descriptiveName, HealthCheckerConfigRabbitMQ mqConfig) : base(
 			descriptiveName, EnumHealthCheckerType.RabbitMQ, mqConfig, logger) {
 
@@ -98,11 +117,7 @@ namespace SlugEnt.ResourceHealthChecker.RabbitMQ {
 			int indexServer = urlString.IndexOf('/');
 			if (indexServer < 0) throw new ArgumentException(errMsgStart + "Could not find Server - missing slash ");
 			MQConfig.ServerIP = urlString [..indexServer];
-			
-			
 			MQConfig.Instance = urlString [++indexServer..];
-
-
 		}
 
 		/// <summary>
@@ -159,6 +174,22 @@ namespace SlugEnt.ResourceHealthChecker.RabbitMQ {
 			}
 
 			return (EnumHealthStatus.Healthy,"");
+		}
+
+
+
+		/// <summary>
+		/// Reads the common properties of Config items for the ConfigHealthChecks configuration objects
+		/// </summary>
+		/// <param name="configuration"></param>
+		/// <param name="configurationSectionRoot"></param>
+		public override void SetupFromConfig(IConfiguration configuration, string configurationSectionRoot)
+		{
+			base.SetupFromConfig(configuration, configurationSectionRoot);
+
+			// Read the File Specific config
+			this.MQConfig.URL = configuration.GetSection(configurationSectionRoot + ":Config:URL").Get<string>();
+			IsReady = true;
 		}
 	}
 }

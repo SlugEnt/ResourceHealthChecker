@@ -1,9 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SlugEnt.ResourceHealthChecker
 {
@@ -24,7 +26,7 @@ namespace SlugEnt.ResourceHealthChecker
 		/// <summary>
 		/// The configuration for this Health Checker
 		/// </summary>
-		public IHealthCheckConfig Config { get; set; }
+		public HealthCheckConfigBase Config { get; set; }
 
 		/// <summary>
 		/// Current Status of this Health Checker
@@ -83,5 +85,11 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		/// <param name="sb"></param>
 		public void DisplayHTML (StringBuilder sb);
+
+
+		/// <summary>
+		/// Allows configuration of the Item from the IConfiguration system
+		/// </summary>
+		public void SetupFromConfig (IConfiguration configuration, string configurationSectionRoot);
 	}
 }

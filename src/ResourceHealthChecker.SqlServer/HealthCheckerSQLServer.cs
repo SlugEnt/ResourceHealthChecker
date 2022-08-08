@@ -6,15 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ResourceHealthChecker;
 using ResourceHealthChecker.SqlServer;
 
-namespace SlugEnt.ResourceHealthChecker.SqlServer
-{
+namespace SlugEnt.ResourceHealthChecker.SqlServer;
+
 	/// <summary>
 	/// Provides Health Checking services on a SQL Database
 	/// </summary>
-	public class HealthCheckerSQLServer : AbstractHealthChecker {
+	public class HealthCheckerSQLServer : AbstractHealthChecker, ISQLServerHealthChecker  {
 		//private ILogger<HealthCheckerSQLServer> _logger;
 		private readonly string _connectionString;
 		private EnumHealthStatus _statusRead = EnumHealthStatus.Failed;
@@ -23,13 +25,24 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 
 
 		/// <summary>
-		/// Constructs a SQL Server Health Checker
+		/// Constructor used when building object from Configuration
 		/// </summary>
-		/// <param name="logger">Where to Log to</param>
-		/// <param name="descriptiveName">Name of this health checker</param>
-		/// <param name="sqlConfig">The SQL Configuration file for the Health Checker</param>
-		/// <exception cref="ApplicationException"></exception>
-		public HealthCheckerSQLServer (ILogger<HealthCheckerSQLServer> logger, string descriptiveName, HealthCheckerConfigSQLServer sqlConfig) : base(descriptiveName, EnumHealthCheckerType.Database, sqlConfig,logger) {
+		/// <param name="logger"></param>
+		public HealthCheckerSQLServer(ILogger<HealthCheckerSQLServer> logger) : base(logger)
+		{
+		CheckerName = "SQL Server Availability Checker";
+		Config = new HealthCheckerConfigSQLServer();
+		}
+
+
+	/// <summary>
+	/// Constructs a SQL Server Health Checker
+	/// </summary>
+	/// <param name="logger">Where to Log to</param>
+	/// <param name="descriptiveName">Name of this health checker</param>
+	/// <param name="sqlConfig">The SQL Configuration file for the Health Checker</param>
+	/// <exception cref="ApplicationException"></exception>
+	public HealthCheckerSQLServer (ILogger<HealthCheckerSQLServer> logger, string descriptiveName, HealthCheckerConfigSQLServer sqlConfig) : base(descriptiveName, EnumHealthCheckerType.Database, sqlConfig,logger) {
 
 			if ( sqlConfig.ConnectionString == string.Empty )
 				throw new ApplicationException("At the moment only Connection Strings are supported.  Must supply a connection string");
@@ -185,5 +198,23 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer
 
 			return (_statusOverall, msg);
 		}
+
+
+		/// <summary>
+		/// Reads the SQL Specific properties of Config items for the ConfigHealthChecks configuration objects
+		/// </summary>
+		/// <param name="configuration"></param>
+		/// <param name="configurationSectionRoot"></param>
+		public override void SetupFromConfig(IConfiguration configuration, string configurationSectionRoot)
+		{
+			base.SetupFromConfig(configuration, configurationSectionRoot);
+
+			// Read the File Specific config
+			this.SQLConfig.ConnectionString = configuration.GetSection(configurationSectionRoot + ":Config:ConnectionString").Get<string>();
+			this.SQLConfig.ReadTable = configuration.GetSection(configurationSectionRoot + ":Config:ReadFileName").Get<string>();
+			this.SQLConfig.WriteTable = configuration.GetSection(configurationSectionRoot + ":Config:WriteFileName").Get<string>();
+			this.SQLConfig.CheckReadTable = configuration.GetSection(configurationSectionRoot + ":Config:CheckReadTable").Get<bool>();
+			this.SQLConfig.CheckWriteTable = configuration.GetSection(configurationSectionRoot + ":Config:CheckWriteTable").Get<bool>();
+			IsReady = true;
+		}
 	}
-}

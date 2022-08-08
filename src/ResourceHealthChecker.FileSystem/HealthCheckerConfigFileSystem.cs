@@ -1,16 +1,18 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using ResourceHealthChecker;
 
 namespace SlugEnt.ResourceHealthChecker
 {
 	/// <summary>
 	/// Configuration settings for the FileSystem health check.
 	/// </summary>
-	public class HealthCheckerConfigFileSystem : IHealthCheckConfig {
+	public class HealthCheckerConfigFileSystem : HealthCheckConfigBase, IConfigHealthChecksConfig, IFileSystemHealthChecker  {
 		/// <summary>
 		/// The fully qualified path to be checked
 		/// </summary>
@@ -24,7 +26,7 @@ namespace SlugEnt.ResourceHealthChecker
 		/// <summary>
 		/// If true then the Health Check requires that the folder be writeable by the process
 		/// </summary>
-		public bool CheckIsWriteble { get; set; }
+		public bool CheckIsWriteable { get; set; }
 
 
 		/// <summary>
@@ -38,6 +40,6 @@ namespace SlugEnt.ResourceHealthChecker
 		/// The explicit Read case will be omitted.  This is also useful in cases where files are automatically removed from
 		/// a directory and thus our ReadFileName might be missing
 		/// </summary>
-		public bool AssumeReadableIfWritable { get; set; } = true;
+		public bool AssumeReadableIfWriteable { get; set; } = true;
 	}
 }

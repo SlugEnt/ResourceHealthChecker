@@ -9,6 +9,7 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using SlugEnt.ResourceHealthChecker;
+using SlugEnt.ResourceHealthChecker.SqlServer;
 
 
 namespace SlugEnt.ResourceHealthChecker.SampleConsole {
@@ -80,7 +81,13 @@ namespace SlugEnt.ResourceHealthChecker.SampleConsole {
 
 				                                                  // Add Health check Processor to available services
 				                                                  .AddSingleton<HealthCheckProcessor>()
-				                                                  .AddHostedService<HealthCheckerBackgroundProcessor>())
+				                                                  .AddHostedService<HealthCheckerBackgroundProcessor>()
+
+																  // Eventually do something else like single call to add all Healthcheckers
+				                                                  .AddTransient<IFileSystemHealthChecker,HealthCheckerFileSystem>()
+				                                                  .AddTransient<ISQLServerHealthChecker, HealthCheckerSQLServer>()
+				                                                  .AddTransient<IFileSystemHealthChecker, HealthCheckerFileSystem>()
+														)
 			                       .Build();
 
 

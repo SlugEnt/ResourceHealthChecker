@@ -78,7 +78,7 @@ namespace HealthCheck_Test
 
 			HealthCheckerConfigFileSystem config = new ()
 			{
-				CheckIsWriteble = true,
+				CheckIsWriteable = true,
 				CheckIsReadable = false,
 				FolderPath = directoryInfo.FullName,
 			};
@@ -116,7 +116,7 @@ namespace HealthCheck_Test
 
 			HealthCheckerConfigFileSystem config = new ()
 			{
-				CheckIsWriteble = false,
+				CheckIsWriteable = false,
 				CheckIsReadable = true,
 				FolderPath = dirName,
 			};
@@ -164,7 +164,7 @@ namespace HealthCheck_Test
 
 			HealthCheckerConfigFileSystem config = new ()
 			{
-				CheckIsWriteble = false,
+				CheckIsWriteable = false,
 				CheckIsReadable = true,
 				FolderPath = testDir,
 			};
@@ -205,7 +205,7 @@ namespace HealthCheck_Test
 
 			HealthCheckerConfigFileSystem config = new ()
 			{
-				CheckIsWriteble = false,
+				CheckIsWriteable = false,
 				CheckIsReadable = true,
 				FolderPath = dirName,
 			};

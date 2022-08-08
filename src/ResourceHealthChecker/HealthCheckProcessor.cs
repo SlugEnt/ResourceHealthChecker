@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
@@ -14,28 +16,55 @@ namespace SlugEnt.ResourceHealthChecker
 	/// <summary>
 	/// Manages all Health Checks 
 	/// </summary>
-	public class HealthCheckProcessor
-	{
-		private readonly List<IHealthChecker>          _healthCheckerList;
+	public class HealthCheckProcessor {
+		private readonly List<IHealthChecker> _healthCheckerList;
 		private readonly ILogger<HealthCheckProcessor> _logger;
 		private int _checkIntervalMS = 5000;
 		private Action<int> _actionCheckInterval;
 		private bool _isStartingUp;
+		private IConfiguration _configuration;
 
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="checkIntervalInSeconds"></param>
-		public HealthCheckProcessor(ILogger<HealthCheckProcessor> logger)
-		{
+		public HealthCheckProcessor (ILogger<HealthCheckProcessor> logger, IConfiguration configuration, IServiceProvider serviceProvider) {
 			_healthCheckerList = new List<IHealthChecker>();
 			_logger = logger;
+			_configuration = configuration;
 			ProcessingStage = EnumHealthCheckProcessorStage.Constructed;
+			
+			// Process the configuration to add any Health Checks configured from Configuration
+			try {
+				ConfigResourceHealthChecker configResourceHealthChecker = new();
+				configResourceHealthChecker = configuration.GetSection("ResourceHealthChecker").Get<ConfigResourceHealthChecker>();
+
+				// Loop thru all the Health Checks defined in the Configuration
+				for ( int i = 0; i < configResourceHealthChecker.ConfigHealthChecks.Count; i++ ) {
+					IHealthChecker healthChecker = null;
+
+					string configRoot = "ResourceHealthChecker:ConfigHealthChecks:" + i.ToString();
+					ConfigHealthChecks hc = configResourceHealthChecker.ConfigHealthChecks [i];
+
+					string typeLower = hc.Type.ToLower();
+					if ( typeLower == "filesystem" ) { healthChecker = (IHealthChecker)serviceProvider.GetService<IFileSystemHealthChecker>(); }
+					else if ( typeLower == "sql" ) healthChecker = (IHealthChecker)serviceProvider.GetService<ISQLServerHealthChecker>();
+
+					healthChecker.SetupFromConfig(configuration, configRoot);
+					AddCheckItem(healthChecker);
+				}
+			}
+			catch ( Exception ex ) {
+				_logger.LogError("{Class} has encountered a configuration error while trying to add HealthChecks via Configuration.", ex);
+				throw;
+			}
+			
 		}
+	
 
 
-		/// <summary>
+	/// <summary>
 		/// Tells at what point in the life cycle of the Health Processor it is currently at.
 		/// </summary>
 		public EnumHealthCheckProcessorStage ProcessingStage {

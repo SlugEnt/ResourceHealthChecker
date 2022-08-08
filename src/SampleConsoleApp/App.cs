@@ -13,13 +13,21 @@ using SlugEnt.ResourceHealthChecker.SqlServer;
 
 namespace SlugEnt.ResourceHealthChecker.SampleConsole
 {
+	/// <summary>
+	/// Application
+	/// </summary>
 	internal class App
 	{
 		IConfiguration _configuration;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly ILogger<App> _logger;
 
-
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="configuration"></param>
+		/// <param name="services"></param>
+		/// <param name="logger"></param>
 		public App (IConfiguration configuration, IServiceProvider services, ILogger<App> logger) {
 			_configuration = configuration;
 			_serviceProvider = services;
@@ -27,6 +35,12 @@ namespace SlugEnt.ResourceHealthChecker.SampleConsole
 		}
 
 
+		/// <summary>
+		/// App processing cycle
+		/// </summary>
+		/// <param name="cancellationToken"></param>
+		/// <returns></returns>
+		/// <exception cref="ApplicationException"></exception>
 		public async Task ExecuteAsync(CancellationToken cancellationToken = default)
 		{
 			System.Console.WriteLine("Starting the exec cycle for the app");
@@ -48,7 +62,7 @@ namespace SlugEnt.ResourceHealthChecker.SampleConsole
 			if ( hcfs == null ) throw new ApplicationException("Unable to locate service HealthCheckerFileSystem");
 			HealthCheckerConfigFileSystem config = new ()
 			{
-				CheckIsWriteble = false,
+				CheckIsWriteable = false,
 				CheckIsReadable = true,
 				FolderPath = @"C:\temp\HCR",
 			};
@@ -56,7 +70,7 @@ namespace SlugEnt.ResourceHealthChecker.SampleConsole
 			 
 			HealthCheckerConfigFileSystem config2 = new ()
 			{
-				CheckIsWriteble = true,
+				CheckIsWriteable = true,
 				CheckIsReadable = true,
 				FolderPath = @"C:\temp\HCW",
 			};

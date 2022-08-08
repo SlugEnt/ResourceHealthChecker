@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ResourceHealthChecker;
 using SlugEnt.ResourceHealthChecker;
 
 
-namespace ResourceHealthChecker
+namespace SlugEnt.ResourceHealthChecker
 {
 	/// <summary>
 	/// Background Health Check Processor, that controls the checking of health checks.

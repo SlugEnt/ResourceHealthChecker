@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SlugEnt.ResourceHealthChecker;
 
-namespace ResourceHealthChecker.SqlServer
-{
+namespace ResourceHealthChecker.SqlServer;
+
 	/// <summary>
 	/// Used to specific configuration information for connecting to a specific SQL Instance.
 	/// </summary>
-	public class HealthCheckerConfigSQLServer : IHealthCheckConfig {
+	public class HealthCheckerConfigSQLServer : HealthCheckConfigBase, IConfigHealthChecksConfig {
+
+		/// <summary>
+		/// Default Constructor
+		/// </summary>
+		public HealthCheckerConfigSQLServer () {}
+
 
 		/// <summary>
 		/// Creates a SQL Server HealthChecker configuration object.
@@ -93,4 +95,3 @@ namespace ResourceHealthChecker.SqlServer
 		/// </summary>
 		public string Options { get; set; }
 	}
-}
