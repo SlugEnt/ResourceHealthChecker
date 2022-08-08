@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.Extensions.Hosting;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ResourceHealthChecker;
-using SlugEnt.ResourceHealthChecker;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace SlugEnt.ResourceHealthChecker
@@ -49,7 +48,8 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		/// <param name="stoppingToken"></param>
 		/// <returns></returns>
-		public override async Task StartAsync (CancellationToken stoppingToken) {
+		public override async Task StartAsync(CancellationToken stoppingToken)
+		{
 			stoppingToken.Register(StopService);
 
 			// Now that we have the Cancellation token - give it to HealthCheckProcessor
@@ -84,7 +84,8 @@ namespace SlugEnt.ResourceHealthChecker
 			// Begin processing
 			while (!stoppingToken.IsCancellationRequested)
 			{
-				try {
+				try
+				{
 #pragma warning disable CS4014
 					_healthCheckProcessor.CheckHealth();
 					_lastStatusCount++;
@@ -94,15 +95,16 @@ namespace SlugEnt.ResourceHealthChecker
 
 					EnumHealthStatus currentStatus = _healthCheckProcessor.Status;
 
-					if ( currentStatus != _lastHealthStatus ) {
+					if (currentStatus != _lastHealthStatus)
+					{
 						string msg = "  It was previously in a " + _lastHealthStatus.ToString() + " state for " + _lastStatusCount + " Health Cycle Checks.";
-						if ( currentStatus == EnumHealthStatus.Healthy )
-							_logger.LogWarning("Health Status has returned to a {HealthStatus} State.  Previously was {PriorHealthStatus} for {CycleCount} health check cycles", currentStatus.ToString(), _lastHealthStatus.ToString(),_lastStatusCount);
-						else if ( currentStatus == EnumHealthStatus.Failed )
+						if (currentStatus == EnumHealthStatus.Healthy)
+							_logger.LogWarning("Health Status has returned to a {HealthStatus} State.  Previously was {PriorHealthStatus} for {CycleCount} health check cycles", currentStatus.ToString(), _lastHealthStatus.ToString(), _lastStatusCount);
+						else if (currentStatus == EnumHealthStatus.Failed)
 							_logger.LogCritical("Health Status has changed to a {HealthStatus} State.  Previously was {PriorHealthStatus} for {CycleCount} health check cycles", currentStatus.ToString(), _lastHealthStatus.ToString(), _lastStatusCount);
-						else if ( currentStatus == EnumHealthStatus.Degraded )
+						else if (currentStatus == EnumHealthStatus.Degraded)
 							_logger.LogError("Health Status has changed to a {HealthStatus} State.  Previously was {PriorHealthStatus} for {CycleCount} health check cycles", currentStatus.ToString(), _lastHealthStatus.ToString(), _lastStatusCount);
-						else if ( currentStatus == EnumHealthStatus.Unknown )
+						else if (currentStatus == EnumHealthStatus.Unknown)
 							_logger.LogError(
 								"Health Status is {HealthStatus}.  This should be short term upon initial application start.  If it does not change shortly, then something is wrong.", currentStatus.ToString());
 
@@ -113,11 +115,12 @@ namespace SlugEnt.ResourceHealthChecker
 					// Sleep for cycle time.
 					await Task.Delay(_sleepTime, stoppingToken);
 				}
-				catch ( Exception ex ) {
-					if (stoppingToken.IsCancellationRequested) 
+				catch (Exception ex)
+				{
+					if (stoppingToken.IsCancellationRequested)
 						_logger.LogDebug("Health Checker Background Processor has been requested to shut down.");
 					else
-						_logger.LogError(ex,"Unhandled error in the HealthCheckerBackgroundProcessor loop.  Error was: {ErrorMsg}" , ex.Message);
+						_logger.LogError(ex, "Unhandled error in the HealthCheckerBackgroundProcessor loop.  Error was: {ErrorMsg}", ex.Message);
 				}
 			}
 
@@ -129,13 +132,14 @@ namespace SlugEnt.ResourceHealthChecker
 
 		}
 
-		
+
 
 		/// <summary>
 		/// Sets the sleep time amount in ms.
 		/// </summary>
 		/// <param name="sleepMS"></param>
-		public void SetSleepTime (int sleepMS) {
+		public void SetSleepTime(int sleepMS)
+		{
 			_sleepTime = sleepMS;
 		}
 	}

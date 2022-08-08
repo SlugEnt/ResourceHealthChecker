@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ResourceHealthChecker
+﻿namespace ResourceHealthChecker
 {
 	public enum EnumHealthCheckProcessorStage
 	{
@@ -21,7 +15,7 @@ namespace ResourceHealthChecker
 		FailedToStart = 253,
 
 		Finished = 254,
-		
+
 
 	}
 }

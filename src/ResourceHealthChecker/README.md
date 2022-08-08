@@ -26,6 +26,10 @@ Optionally, add additional Health Checker libraries to Check File Systems, Datab
 .AddHostedService<HealthCheckerBackgroundProcessor>())
 ```
 
+### Setup HealthChecker
+There are 2 ways to setup the Health Checker.  The first is you can manually create the objects and entries.  The second is you can configure them in the AppSettings.Json file and the HealthCheckers will automatically be created.
+
+#### (Option 1) Manually Configuring the Health Checkers in Code
 
 Next in your main application loop you need to setup the Health Checker.
 
@@ -110,4 +114,75 @@ public async Task ExecuteAsync(CancellationToken cancellationToken = default)
 		await Task.Delay(sleepTime, cancellationToken);
 	}
 }
+```
+
+#### (option 2) Configuring in AppSettings.Json
+This is the preferred way.  Check out the AppSettings.JSON in the sample project.  But here is a small slice of what a Configuration can look like:
+```
+{
+  "ResourceHealthChecker": {
+    "CheckIntervalMS":  5000,
+    "ConfigHealthChecks": [
+      {
+        "Type": "FileSystem",
+        "Name": "Temp Read Folder",
+        "Config": {
+          "CheckInterval": 55,
+          "FolderPath": "C:\\temp",
+          "CheckIsReadable": true,
+          "CheckIsWriteable": false,
+          "ReadFileName": "",
+          "IsEnabled": false
+        }
+      },
+      {
+        "Type": "FileSystem",
+        "Name": "Temp Write Folder",
+        "Config": {
+          "FolderPath": "C:\\temp",
+          "CheckIsReadable": false,
+          "CheckIsWriteable": true,
+          "ReadFileName": "",
+          "IsEnabled": true
+        }
+      },
+      {
+        "Type": "SQL",
+        "Name": "Sample DB",
+        "Config": {
+          "CheckReadTable": true,
+          "CheckWriteTable": true,
+          "ConnectionString": "",
+          "ReadTable": "",
+          "WriteTable": ""
+        }
+      }
+    ]
+  }
+}
+```
+
+The only other thing you need to do in code is make sure you add these classes to the ServiceProvider configuration so it can create the objects.
+```
+using IHost host = Host.CreateDefaultBuilder(args)
+	// Add our custom config from above to the default configuration
+	.ConfigureAppConfiguration(config => {
+		config.AddConfiguration(configuration);
+	})
+	.UseSerilog()
+	.ConfigureServices((_, services) =>
+
+		// The main program     
+		services.AddTransient<App>()
+
+			// Add Health check Processor to available services
+			.AddSingleton<HealthCheckProcessor>()
+			.AddHostedService<HealthCheckerBackgroundProcessor>()
+
+			// Eventually do something else like single call to add all Healthcheckers
+			.AddTransient<IFileSystemHealthChecker,HealthCheckerFileSystem>()
+			.AddTransient<ISQLServerHealthChecker, HealthCheckerSQLServer>()
+			.AddTransient<IFileSystemHealthChecker, HealthCheckerFileSystem>()
+	)
+.Build();
 ```

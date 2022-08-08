@@ -1,19 +1,19 @@
 ﻿
+using Microsoft.Extensions.Configuration;
+using SlugEnt.ResourceHealthChecker.Config;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using SlugEnt.ResourceHealthChecker.Config;
 
 namespace SlugEnt.ResourceHealthChecker
 {
 	/// <summary>
 	/// Interface for a HealthChecker
 	/// </summary>
-	public interface IHealthChecker {
+	public interface IHealthChecker
+	{
 		/// <summary>
 		/// Name of this health checker
 		/// </summary>
@@ -49,7 +49,7 @@ namespace SlugEnt.ResourceHealthChecker
 		/// <summary>
 		/// List of recent Health Checks
 		/// </summary>
-		public List<HealthEntryRecord> HealthEntries { get;  }
+		public List<HealthEntryRecord> HealthEntries { get; }
 
 		/// <summary>
 		/// Returns true if the Health Checker is currently running
@@ -79,18 +79,18 @@ namespace SlugEnt.ResourceHealthChecker
 		/// Performs the health check specific to the given HealthChecker.  
 		/// </summary>
 		/// <returns></returns>
-		public Task CheckHealth (CancellationToken token,bool force = false);
+		public Task CheckHealth(CancellationToken token, bool force = false);
 
 		/// <summary>
 		/// Displays this Health Checks information as HTML
 		/// </summary>
 		/// <param name="sb"></param>
-		public void DisplayHTML (StringBuilder sb);
+		public void DisplayHTML(StringBuilder sb);
 
 
 		/// <summary>
 		/// Allows configuration of the Item from the IConfiguration system
 		/// </summary>
-		public void SetupFromConfig (IConfiguration configuration, string configurationSectionRoot);
+		public void SetupFromConfig(IConfiguration configuration, string configurationSectionRoot);
 	}
 }

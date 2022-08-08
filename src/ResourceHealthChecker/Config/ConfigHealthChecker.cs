@@ -8,7 +8,7 @@ public abstract class ConfigHealthChecker : IConfigurationHealthCheckConfig
 	/// <summary>
 	/// How often to check the resource - In Seconds
 	/// </summary>
-	public int CheckInterval { get;set;}
+	public int CheckInterval { get; set; }
 
 
 	/// <summary>

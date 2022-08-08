@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SlugEnt.ResourceHealthChecker
 {
 	public class HealthEntryRecord
 	{
-		public HealthEntryRecord (EnumHealthStatus healthStatus, string message = "") {
+		public HealthEntryRecord(EnumHealthStatus healthStatus, string message = "")
+		{
 			StarteDateTimeOffset = DateTimeOffset.Now;
 			HealthStatus = healthStatus;
 			Message = message;
@@ -48,7 +45,8 @@ namespace SlugEnt.ResourceHealthChecker
 		/// <summary>
 		/// Increments the number of times by 1 that this health record has consecutively been recorded.
 		/// </summary>
-		public void Increment () {
+		public void Increment()
+		{
 			Count++;
 			LastDateTimeOffset = DateTimeOffset.Now;
 		}

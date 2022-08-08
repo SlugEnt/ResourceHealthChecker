@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SlugEnt.ResourceHealthChecker
+﻿namespace SlugEnt.ResourceHealthChecker
 {
 	/// <summary>
 	/// Identifies the state of a given service or function
