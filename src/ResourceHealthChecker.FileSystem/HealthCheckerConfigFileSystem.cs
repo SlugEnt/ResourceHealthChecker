@@ -1,18 +1,10 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using ResourceHealthChecker;
+﻿using SlugEnt.ResourceHealthChecker.Config;
 
-namespace SlugEnt.ResourceHealthChecker
-{
-	/// <summary>
+namespace SlugEnt.ResourceHealthChecker;
+/// <summary>
 	/// Configuration settings for the FileSystem health check.
 	/// </summary>
-	public class HealthCheckerConfigFileSystem : HealthCheckConfigBase, IConfigHealthChecksConfig, IFileSystemHealthChecker  {
+	public class HealthCheckerConfigFileSystem : HealthCheckConfigBase, IConfigurationHealthCheckConfig, IFileSystemHealthChecker  {
 		/// <summary>
 		/// The fully qualified path to be checked
 		/// </summary>
@@ -42,4 +34,4 @@ namespace SlugEnt.ResourceHealthChecker
 		/// </summary>
 		public bool AssumeReadableIfWriteable { get; set; } = true;
 	}
-}
+

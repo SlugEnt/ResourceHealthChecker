@@ -1,9 +1,9 @@
-﻿namespace SlugEnt.ResourceHealthChecker;
+﻿namespace SlugEnt.ResourceHealthChecker.Config;
 
 /// <summary>
 /// The base configuration of 
 /// </summary>
-public abstract class ConfigHealthChecker : IConfigHealthChecksConfig
+public abstract class ConfigHealthChecker : IConfigurationHealthCheckConfig
 {
 	/// <summary>
 	/// How often to check the resource - In Seconds

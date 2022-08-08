@@ -201,7 +201,7 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer;
 
 
 		/// <summary>
-		/// Reads the SQL Specific properties of Config items for the ConfigHealthChecks configuration objects
+		/// Reads the SQL Specific properties of Config items for the ConfigurationHealthChecks configuration objects
 		/// </summary>
 		/// <param name="configuration"></param>
 		/// <param name="configurationSectionRoot"></param>

@@ -1,4 +1,6 @@
-﻿using SlugEnt.ResourceHealthChecker;
+﻿
+using SlugEnt.ResourceHealthChecker;
+using SlugEnt.ResourceHealthChecker.Config;
 
 namespace HealthCheck_Test
 {

@@ -1,10 +1,11 @@
-﻿
+﻿using SlugEnt.ResourceHealthChecker.Config;
+
 namespace SlugEnt.ResourceHealthChecker.RabbitMQ;
 
-	/// <summary>
-	/// Stores the configuration information for connecting to an MQ instance.  It will accept a full URL OR the individual components and build the url from them.
-	/// </summary>
-	public class HealthCheckerConfigRabbitMQ : HealthCheckConfigBase, IConfigHealthChecksConfig {
+/// <summary>
+/// Stores the configuration information for connecting to an MQ instance.  It will accept a full URL OR the individual components and build the url from them.
+/// </summary>
+public class HealthCheckerConfigRabbitMQ : HealthCheckConfigBase, IConfigurationHealthCheckConfig {
 		/// <summary>
 		/// The full URL to connect to.  The engine uses the URL OR the user, password, server and instance to build a URL
 		/// </summary>

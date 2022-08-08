@@ -1,9 +1,9 @@
-﻿namespace SlugEnt.ResourceHealthChecker;
+﻿namespace SlugEnt.ResourceHealthChecker.Config;
 
 /// <summary>
 /// Interface that describes the Configuration of an Health Check
 /// </summary>
-public interface IConfigHealthChecksConfig {
+public interface IConfigurationHealthCheckConfig {
 	/// <summary>
 	/// How often the HealthCheckProcessor should check the health of this resource
 	/// </summary>

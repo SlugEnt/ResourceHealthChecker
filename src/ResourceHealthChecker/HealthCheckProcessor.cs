@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using ResourceHealthChecker;
+using SlugEnt.ResourceHealthChecker.Config;
 
 namespace SlugEnt.ResourceHealthChecker
 {
@@ -37,15 +38,15 @@ namespace SlugEnt.ResourceHealthChecker
 			
 			// Process the configuration to add any Health Checks configured from Configuration
 			try {
-				ConfigResourceHealthChecker configResourceHealthChecker = new();
-				configResourceHealthChecker = configuration.GetSection("ResourceHealthChecker").Get<ConfigResourceHealthChecker>();
+				ConfigurationResourceHealthChecker configurationResourceHealthChecker = new();
+				configurationResourceHealthChecker = configuration.GetSection("ResourceHealthChecker").Get<ConfigurationResourceHealthChecker>();
 
 				// Loop thru all the Health Checks defined in the Configuration
-				for ( int i = 0; i < configResourceHealthChecker.ConfigHealthChecks.Count; i++ ) {
+				for ( int i = 0; i < configurationResourceHealthChecker.ConfigHealthChecks.Count; i++ ) {
 					IHealthChecker healthChecker = null;
 
-					string configRoot = "ResourceHealthChecker:ConfigHealthChecks:" + i.ToString();
-					ConfigHealthChecks hc = configResourceHealthChecker.ConfigHealthChecks [i];
+					string configRoot = "ResourceHealthChecker:ConfigurationHealthChecks:" + i.ToString();
+					ConfigurationHealthChecks hc = configurationResourceHealthChecker.ConfigHealthChecks [i];
 
 					string typeLower = hc.Type.ToLower();
 					if ( typeLower == "filesystem" ) { healthChecker = (IHealthChecker)serviceProvider.GetService<IFileSystemHealthChecker>(); }
@@ -54,6 +55,9 @@ namespace SlugEnt.ResourceHealthChecker
 					healthChecker.SetupFromConfig(configuration, configRoot);
 					AddCheckItem(healthChecker);
 				}
+
+				// Get the HealthChecker Interval 
+				this.CheckIntervalMS = configurationResourceHealthChecker.CheckIntervalMS;
 			}
 			catch ( Exception ex ) {
 				_logger.LogError("{Class} has encountered a configuration error while trying to add HealthChecks via Configuration.", ex);
@@ -73,7 +77,7 @@ namespace SlugEnt.ResourceHealthChecker
 		}
 
 		/// <summary>
-		/// How often the check processor runs in milliseconds.  Note the actual timer loop cycle is in HealthCheckerBackgroundProcessor. It reads this value so it cab be changed dynamically by the owner app.
+		/// How often the check processor runs in milliseconds.  Note the actual timer loop cycle is in HealthCheckerBackgroundProcessor. It reads this value so it can be changed dynamically by the owner app.
 		/// </summary>
 		public int CheckIntervalMS {
 			get { return _checkIntervalMS;}
@@ -85,6 +89,9 @@ namespace SlugEnt.ResourceHealthChecker
 			} }
 
 
+		/// <summary>
+		/// Allows defining of the 
+		/// </summary>
 		public Action<int> SetCheckIntervalAction {
 			set { _actionCheckInterval = value; }
 		}

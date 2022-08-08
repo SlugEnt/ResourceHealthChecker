@@ -52,10 +52,6 @@ namespace SlugEnt.ResourceHealthChecker.SampleConsole
 			HealthCheckProcessor? healthCheckProcessor = _serviceProvider.GetService<HealthCheckProcessor>();
 			if ( healthCheckProcessor == null ) throw new ApplicationException("HealthCheckProcessor Service could not be located.");
 
-			// Finish configuring it!
-			healthCheckProcessor.CheckIntervalMS = 7000;
-
-
 
 			//  File System Checker
 			ILogger<HealthCheckerFileSystem>? hcfs = _serviceProvider.GetService<ILogger<HealthCheckerFileSystem>>();

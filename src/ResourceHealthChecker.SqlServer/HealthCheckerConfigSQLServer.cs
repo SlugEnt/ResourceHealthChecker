@@ -1,12 +1,12 @@
 ﻿using System;
-using SlugEnt.ResourceHealthChecker;
+using SlugEnt.ResourceHealthChecker.Config;
 
 namespace ResourceHealthChecker.SqlServer;
 
-	/// <summary>
-	/// Used to specific configuration information for connecting to a specific SQL Instance.
-	/// </summary>
-	public class HealthCheckerConfigSQLServer : HealthCheckConfigBase, IConfigHealthChecksConfig {
+/// <summary>
+/// Used to specific configuration information for connecting to a specific SQL Instance.
+/// </summary>
+public class HealthCheckerConfigSQLServer : HealthCheckConfigBase, IConfigurationHealthCheckConfig {
 
 		/// <summary>
 		/// Default Constructor

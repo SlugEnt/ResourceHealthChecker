@@ -179,7 +179,7 @@ namespace SlugEnt.ResourceHealthChecker.RabbitMQ {
 
 
 		/// <summary>
-		/// Reads the common properties of Config items for the ConfigHealthChecks configuration objects
+		/// Reads the common properties of Config items for the ConfigurationHealthChecks configuration objects
 		/// </summary>
 		/// <param name="configuration"></param>
 		/// <param name="configurationSectionRoot"></param>

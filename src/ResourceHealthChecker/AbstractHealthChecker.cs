@@ -1,14 +1,11 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using SlugEnt.ResourceHealthChecker.Config;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using ResourceHealthChecker;
 
 namespace SlugEnt.ResourceHealthChecker
 {
@@ -195,7 +192,7 @@ namespace SlugEnt.ResourceHealthChecker
 				// Lets log it.
 				if ( newStatus == EnumHealthStatus.Healthy ) {
 					//_logger.LogWarning("Health Check: " + ShortTitle() + "|  has entered into a HEALTHY State.  Message {@message}", message,);
-					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]",ShortTitle,newStatus);
+					_logger.LogWarning("Health Check: {HealthChecker} has changed status to [{HealthStatus}]",FullTitle,newStatus);
 				}
 				else if (newStatus == EnumHealthStatus.Failed) 
 					_logger.LogError("Health Check: {HealthChecker} has changed status to [{HealthStatus}] --> {HealthDetails}", FullTitle, newStatus,message);
@@ -246,7 +243,7 @@ namespace SlugEnt.ResourceHealthChecker
 
 
 		/// <summary>
-		/// Reads the common properties of Config items for the ConfigHealthChecks configuration objects
+		/// Reads the common properties of Config items for the ConfigurationHealthChecks configuration objects
 		/// </summary>
 		/// <param name="configuration"></param>
 		/// <param name="configurationSectionRoot"></param>
