@@ -68,6 +68,13 @@ public class HealthCheckProcessor
 	}
 
 
+	/// <summary>
+	/// Returns a list of all the health checkers.
+	/// </summary>
+	public List<IHealthChecker> HealthCheckers {
+		get { return _healthCheckerList; }
+	}
+
 
 	/// <summary>
 	/// Tells at what point in the life cycle of the Health Processor it is currently at.

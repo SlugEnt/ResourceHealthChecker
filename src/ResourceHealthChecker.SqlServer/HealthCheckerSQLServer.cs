@@ -18,7 +18,7 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer;
 	/// </summary>
 	public class HealthCheckerSQLServer : AbstractHealthChecker, ISQLServerHealthChecker  {
 		//private ILogger<HealthCheckerSQLServer> _logger;
-		private readonly string _connectionString;
+		private string _connectionString;
 		private EnumHealthStatus _statusRead = EnumHealthStatus.Failed;
 		private EnumHealthStatus _statusWrite = EnumHealthStatus.Failed;
 		private EnumHealthStatus _statusOverall = EnumHealthStatus.Failed;
@@ -52,18 +52,7 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer;
 			Config = sqlConfig;
 
 
-			// Lets build a complete Connection string we can use.
-			SqlConnectionStringBuilder sqlBuilder = new (sqlConfig.ConnectionString);
-			sqlBuilder ["TrustServerCertificate"] = true;
-			sqlBuilder ["Connect Timeout"] = 5; 
-
-			// Store some values from Connection string into Config
-			_connectionString = sqlBuilder.ConnectionString;
-			if (sqlConfig.Database == string.Empty) sqlConfig.Database = sqlBuilder.InitialCatalog;
-			if (sqlConfig.UserName == string.Empty) sqlConfig.UserName = sqlBuilder.UserID;
-			if (sqlConfig.Server == string.Empty) sqlConfig.Server = sqlBuilder.DataSource;
-			sqlConfig.ConnectionString = _connectionString;
-			
+			BuildConnectionString(sqlConfig.ConnectionString);
 
 			_logger.LogDebug("SQL Constructed Connection String:  [ {SQLConnection} ]" , _connectionString );
 
@@ -71,10 +60,30 @@ namespace SlugEnt.ResourceHealthChecker.SqlServer;
 		}
 
 
-		/// <summary>
-		///  A synonym of the abstract classes Config property.
-		/// </summary>
-		public HealthCheckerConfigSQLServer SQLConfig
+	/// <summary>
+	/// Builds the connection String, appending some items as necessary
+	/// </summary>
+	/// <param name="currentConnectionString"></param>
+	private void BuildConnectionString (string currentConnectionString) {
+		// Lets build a complete Connection string we can use.
+		SqlConnectionStringBuilder sqlBuilder = new(currentConnectionString);
+		sqlBuilder["TrustServerCertificate"] = true;
+		sqlBuilder["Connect Timeout"] = 5;
+
+		// Store some values from Connection string into Config
+		_connectionString = sqlBuilder.ConnectionString;
+
+		if (SQLConfig.Database == string.Empty) SQLConfig.Database = sqlBuilder.InitialCatalog;
+		if (SQLConfig.UserName == string.Empty) SQLConfig.UserName = sqlBuilder.UserID;
+		if (SQLConfig.Server == string.Empty) SQLConfig.Server = sqlBuilder.DataSource;
+		SQLConfig.ConnectionString = _connectionString;
+	}
+
+
+	/// <summary>
+	///  A synonym of the abstract classes Config property.
+	/// </summary>
+	public HealthCheckerConfigSQLServer SQLConfig
 		{
 			get { return (HealthCheckerConfigSQLServer)this.Config; }
 		}
