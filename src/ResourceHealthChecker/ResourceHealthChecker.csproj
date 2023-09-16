@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>1.2.1</AssemblyVersion>
-    <Version>1.2.1</Version>
+    <AssemblyVersion>1.3.3</AssemblyVersion>
+    <Version>1.3.3</Version>
     <PackageId>SlugEnt.$(AssemblyName)</PackageId>
     <Authors>daborg69</Authors>
     <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>
@@ -43,6 +43,12 @@
 	<ItemGroup>
 	  <Folder Include="Properties\" />
 	</ItemGroup>
+
+
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;D:\A_Dev\SlugEnt\APIInfo\src\Slugent.APIInfo\bin\Debug\net6.0&quot;" />
+	</Target>
 
 
 </Project>
