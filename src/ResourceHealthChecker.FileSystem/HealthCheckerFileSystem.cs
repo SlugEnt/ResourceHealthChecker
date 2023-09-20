@@ -29,9 +29,10 @@ namespace SlugEnt.ResourceHealthChecker
         /// <param name="logger"></param>
         public HealthCheckerFileSystem(ILogger<HealthCheckerFileSystem> logger, IServiceProvider ser) : base(logger)
         {
-            _fileSystem = new FileSystem();
-            CheckerName = "File System Permissions Checker";
-            Config      = new HealthCheckerConfigFileSystem();
+            _fileSystem       = new FileSystem();
+            HealthCheckerType = EnumHealthCheckerType.FileSystem;
+            CheckerName       = "FileSys Permissions Checker";
+            Config            = new HealthCheckerConfigFileSystem();
         }
 
 
@@ -45,9 +46,10 @@ namespace SlugEnt.ResourceHealthChecker
         public HealthCheckerFileSystem(IFileSystem fileSystem, ILogger<HealthCheckerFileSystem> logger, string descriptiveName,
                                        HealthCheckerConfigFileSystem config) : base(descriptiveName, EnumHealthCheckerType.FileSystem, config, logger)
         {
-            _fileSystem = fileSystem;
-            CheckerName = "File System Permissions Checker";
-            IsReady     = true;
+            _fileSystem       = fileSystem;
+            HealthCheckerType = EnumHealthCheckerType.FileSystem;
+            CheckerName       = "FileSys Permissions Checker";
+            IsReady           = true;
         }
 
 
@@ -58,7 +60,10 @@ namespace SlugEnt.ResourceHealthChecker
         /// <param name="descriptiveName"></param>
         /// <param name="config"></param>
         public HealthCheckerFileSystem(ILogger<HealthCheckerFileSystem> logger, string descriptiveName, HealthCheckerConfigFileSystem config) :
-            this(new FileSystem(), logger, descriptiveName, config) { }
+            this(new FileSystem(), logger, descriptiveName, config)
+        {
+            HealthCheckerType = EnumHealthCheckerType.FileSystem;
+        }
 
 
         /// <summary>
@@ -93,6 +98,8 @@ namespace SlugEnt.ResourceHealthChecker
                     access = "Read";
                 if (FileSystemConfig.CheckIsWriteable)
                     access += "Write";
+                else
+                    access += "Unknown";
 
                 return access + " | " + ShortTitle + "  -->  " + FileSystemConfig.FolderPath;
             }
@@ -285,7 +292,8 @@ namespace SlugEnt.ResourceHealthChecker
             this.FileSystemConfig.ReadFileName     = configuration.GetSection(configurationSectionRoot + ":Config:ReadFileName").Get<string>();
             this.FileSystemConfig.CheckIsReadable  = configuration.GetSection(configurationSectionRoot + ":Config:CheckIsReadable").Get<bool>();
             this.FileSystemConfig.CheckIsWriteable = configuration.GetSection(configurationSectionRoot + ":Config:CheckIsWriteable").Get<bool>();
-            IsReady                                = true;
+
+            //IsReady                                = true;
         }
 #pragma warning restore
     }

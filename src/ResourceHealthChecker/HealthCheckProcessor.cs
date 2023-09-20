@@ -51,7 +51,7 @@ public class HealthCheckProcessor
                 {
                     IHealthChecker healthChecker = null;
 
-                    string                    configRoot = "ResourceHealthChecker:ConfigurationHealthChecks:" + i.ToString();
+                    string                    configRoot = "ResourceHealthChecker:ConfigHealthChecks:" + i.ToString();
                     ConfigurationHealthChecks hc         = configurationResourceHealthChecker.ConfigHealthChecks[i];
 
                     string typeLower = hc.Type.ToLower();
@@ -62,7 +62,18 @@ public class HealthCheckProcessor
                     else if (typeLower == "sql")
                         healthChecker = (IHealthChecker)serviceProvider.GetService<ISQLServerHealthChecker>();
 
+
+                    // Set common properties of all health checkers from the config.
+                    healthChecker.Name      = configuration.GetSection(configRoot + ":Name").Get<string>();
+                    healthChecker.IsEnabled = configuration.GetSection(configRoot + ":IsEnabled").Get<bool>();
+
+
+                    // Finish setup by calling Individual HealthChecker Config sections
                     healthChecker.SetupFromConfig(configuration, configRoot);
+
+                    // set to Ready.
+                    healthChecker.IsReady = true;
+
                     AddCheckItem(healthChecker);
                 }
 
@@ -124,7 +135,12 @@ public class HealthCheckProcessor
     public void AddCheckItem(IHealthChecker healthChecker)
     {
         _healthCheckerList.Add(healthChecker);
-        _logger.LogInformation("HealthChecker Added:  [ {HealthChecker} ]", healthChecker.ShortTitle);
+        if (healthChecker.IsEnabled)
+            _logger.LogInformation("HealthChecker Added:  [ {HealthChecker} ]", healthChecker.ShortTitle);
+        else
+        {
+            _logger.LogWarning("Disabled HealthChecker Added:  [ {HealthChecker} ]", healthChecker.ShortTitle);
+        }
     }
 
 

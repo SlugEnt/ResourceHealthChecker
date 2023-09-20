@@ -51,7 +51,8 @@ internal class App
             throw new ApplicationException("HealthCheckProcessor Service could not be located.");
         }
 
-
+        // We are now reading the file System Checks from the appsettings.json file.
+        /*
         //  File System Checker
         ILogger<HealthCheckerFileSystem>? hcfs = _serviceProvider.GetService<ILogger<HealthCheckerFileSystem>>();
         if (hcfs == null)
@@ -63,9 +64,10 @@ internal class App
         {
             CheckIsWriteable = false,
             CheckIsReadable  = true,
-            FolderPath       = @"C:\temp\HCR"
+            FolderPath       = @"C:\temp\HCR",
+            IsEnabled        = false,
         };
-        HealthCheckerFileSystem fileSystemA = new(hcfs, "Temp Folder Read", config);
+        HealthCheckerFileSystem fileSystemA = new(hcfs, "Temp Folder Read - disabled", config);
 
         HealthCheckerConfigFileSystem config2 = new()
         {
@@ -76,9 +78,11 @@ internal class App
         HealthCheckerFileSystem fileSystemB = new(hcfs, "Windows Folder ReadWrite", config2);
         healthCheckProcessor.AddCheckItem(fileSystemA);
         healthCheckProcessor.AddCheckItem(fileSystemB);
+        */
 
 
         // SQL Server Checker
+        // We have 2 SQL Checks, both are disabled.  One is read from the Appsettings.json and one is setup here in code.
         string connStr = _configuration.GetConnectionString("AdventureDB");
         if (String.IsNullOrEmpty(connStr))
         {
@@ -94,6 +98,9 @@ internal class App
         }
 
         HealthCheckerSQLServer sqlServer = new(hcsqlLogger, "Adventure Works", dbConfig);
+
+        // Because we are adding this thru code, we need to set the IsReady manually.
+        sqlServer.IsReady = true;
         healthCheckProcessor.AddCheckItem(sqlServer);
 
 

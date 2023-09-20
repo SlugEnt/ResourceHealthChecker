@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using SlugEnt.ResourceHealthChecker.Config;
 using System;
 using System.Collections.Generic;
@@ -9,88 +8,99 @@ using System.Threading.Tasks;
 
 namespace SlugEnt.ResourceHealthChecker
 {
-	/// <summary>
-	/// Interface for a HealthChecker
-	/// </summary>
-	public interface IHealthChecker
-	{
-		/// <summary>
-		/// Name of this health checker
-		/// </summary>
-		public string Name { get; set; }
+    /// <summary>
+    /// Interface for a HealthChecker
+    /// </summary>
+    public interface IHealthChecker
+    {
+        /// <summary>
+        /// Name of this health checker
+        /// </summary>
+        public string Name { get; set; }
 
-		/// <summary>
-		/// The type of Health Check this is
-		/// </summary>
-		public EnumHealthCheckerType HealthCheckerType { get; set; }
+        /// <summary>
+        /// If true, the health check will run.  If false it will not
+        /// </summary>
+        public bool IsEnabled { get; set; }
 
-		/// <summary>
-		/// The configuration for this Health Checker
-		/// </summary>
-		public HealthCheckConfigBase Config { get; set; }
+        /// <summary>
+        /// If true, the health checker is ready to begin checking
+        /// </summary>
+        public bool IsReady { get; set; }
 
-		/// <summary>
-		/// Current Status of this Health Checker
-		/// </summary>
-		public EnumHealthStatus Status { get; }
+        /// <summary>
+        /// The type of Health Check this is
+        /// </summary>
+        public EnumHealthCheckerType HealthCheckerType { get; set; }
 
-		/// <summary>
-		/// When Status last checked
-		/// </summary>
-		public DateTimeOffset LastStatusCheck { get; }
+        /// <summary>
+        /// The configuration for this Health Checker
+        /// </summary>
+        public HealthCheckConfigBase Config { get; set; }
 
+        /// <summary>
+        /// Current Status of this Health Checker
+        /// </summary>
+        public EnumHealthStatus Status { get; }
 
-		/// <summary>
-		/// Scheduled time for next health check
-		/// </summary>
-		public DateTimeOffset NextStatusCheck { get; }
-
-
-		/// <summary>
-		/// List of recent Health Checks
-		/// </summary>
-		public List<HealthEntryRecord> HealthEntries { get; }
-
-		/// <summary>
-		/// Returns true if the Health Checker is currently running
-		/// </summary>
-		public bool IsRunning { get; }
+        /// <summary>
+        /// When Status last checked
+        /// </summary>
+        public DateTimeOffset LastStatusCheck { get; }
 
 
-		/// <summary>
-		/// Name of the Class of Checker
-		/// </summary>
-		public string CheckerName { get; set; }
+        /// <summary>
+        /// Scheduled time for next health check
+        /// </summary>
+        public DateTimeOffset NextStatusCheck { get; }
 
 
-		/// <summary>
-		/// The Title / Name of the Health Checker
-		/// </summary>
-		public string ShortTitle { get; }
+        /// <summary>
+        /// List of recent Health Checks
+        /// </summary>
+        public List<HealthEntryRecord> HealthEntries { get; }
+
+        /// <summary>
+        /// Returns true if the Health Checker is currently running
+        /// </summary>
+        public bool IsRunning { get; }
 
 
-		/// <summary>
-		/// The full name of this checker - includes the details about the item being checked
-		/// </summary>
-		public string FullTitle { get; }
+        /// <summary>
+        /// Name of the Class of Checker
+        /// </summary>
+        public string CheckerName { get; set; }
 
 
-		/// <summary>
-		/// Performs the health check specific to the given HealthChecker.  
-		/// </summary>
-		/// <returns></returns>
-		public Task CheckHealth(CancellationToken token, bool force = false);
-
-		/// <summary>
-		/// Displays this Health Checks information as HTML
-		/// </summary>
-		/// <param name="sb"></param>
-		public void DisplayHTML(StringBuilder sb);
+        /// <summary>
+        /// The Title / Name of the Health Checker
+        /// </summary>
+        public string ShortTitle { get; }
 
 
-		/// <summary>
-		/// Allows configuration of the Item from the IConfiguration system
-		/// </summary>
-		public void SetupFromConfig(IConfiguration configuration, string configurationSectionRoot);
-	}
+        /// <summary>
+        /// The full name of this checker - includes the details about the item being checked
+        /// </summary>
+        public string FullTitle { get; }
+
+
+        /// <summary>
+        /// Performs the health check specific to the given HealthChecker.  
+        /// </summary>
+        /// <returns></returns>
+        public Task CheckHealth(CancellationToken token, bool force = false);
+
+
+        /// <summary>
+        /// Displays this Health Checks information as HTML
+        /// </summary>
+        /// <param name="sb"></param>
+        public void DisplayHTML(StringBuilder sb);
+
+
+        /// <summary>
+        /// Allows configuration of the Item from the IConfiguration system
+        /// </summary>
+        public void SetupFromConfig(IConfiguration configuration, string configurationSectionRoot);
+    }
 }
