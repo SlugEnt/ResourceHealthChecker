@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SlugEnt.ResourceHealthChecker;
 
 /// <summary>
-/// Manages all Health Checks for an application
+/// Manages all Health Checks for an application 
 /// </summary>
 public class HealthCheckProcessor
 {
@@ -58,14 +58,22 @@ public class HealthCheckProcessor
                     if (typeLower == "filesystem")
                     {
                         healthChecker = (IHealthChecker)serviceProvider.GetService<IFileSystemHealthChecker>();
+                        if (healthChecker == null)
+                            logger.LogError("Unable to find a Services Instance for a FileSystemHealthChecker.  Ensure it has been added to the Services scope");
                     }
                     else if (typeLower == "sql")
+                    {
                         healthChecker = (IHealthChecker)serviceProvider.GetService<ISQLServerHealthChecker>();
+                        if (healthChecker == null)
+                            logger.LogError("Unable to find a Services Instance for a SQLServerHealthChecker.  Ensure it has been added to the Services scope");
+                    }
 
+                    if (healthChecker == null)
+                        throw new ApplicationException("A required HealthChecker was not able to be loaded from the Services Scope.");
 
                     // Set common properties of all health checkers from the config.
-                    healthChecker.Name      = configuration.GetSection(configRoot + ":Name").Get<string>();
-                    healthChecker.IsEnabled = configuration.GetSection(configRoot + ":IsEnabled").Get<bool>();
+                    healthChecker.Name      = hc.Name;      // configuration.GetSection(configRoot + ":Name").Get<string>();
+                    healthChecker.IsEnabled = hc.IsEnabled; //configuration.GetSection(configRoot + ":IsEnabled").Get<bool>();
 
 
                     // Finish setup by calling Individual HealthChecker Config sections
@@ -80,9 +88,17 @@ public class HealthCheckProcessor
                 // Get the HealthChecker Interval 
                 this.CheckIntervalMS = configurationResourceHealthChecker.CheckIntervalMS;
             }
+
+            // There are no health checks so set to ready.
+            else
+            {
+                // Not sure what we should set to - there is nothing to check.
+                ProcessingStage = EnumHealthCheckProcessorStage.Started;
+            }
         }
         catch (Exception ex)
         {
+            ProcessingStage = EnumHealthCheckProcessorStage.FailedToStart;
             _logger.LogError("{Class} has encountered a configuration error while trying to add HealthChecks via Configuration.", ex);
             throw;
         }

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>SlugEnt.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-    <Version>1.3.3</Version>
+    <Version>1.3.5</Version>
   </PropertyGroup>
 
   <ItemGroup>

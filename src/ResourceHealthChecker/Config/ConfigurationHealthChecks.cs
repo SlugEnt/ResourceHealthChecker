@@ -5,15 +5,18 @@
 /// </summary>
 public class ConfigurationHealthChecks
 {
-	/// <summary>
-	/// The Type of Health Check
-	/// </summary>
-	public string Type { get; set; }
+    /// <summary>
+    /// The Type of Health Check
+    /// </summary>
+    public string Type { get; set; }
 
-	/// <summary>
-	/// The Name of the Health Check
-	/// </summary>
-	public string Name { get; set; }
+    /// <summary>
+    /// The Name of the Health Check
+    /// </summary>
+    public string Name { get; set; }
 
+    /// <summary>
+    /// If the check should be activated and checked
+    /// </summary>
+    public bool IsEnabled { get; set; }
 }
-

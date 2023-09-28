@@ -1,21 +1,21 @@
 ﻿namespace ResourceHealthChecker
 {
-	public enum EnumHealthCheckProcessorStage
-	{
-		Constructed = 0,
+    public enum EnumHealthCheckProcessorStage
+    {
+        Constructed = 0,
 
-		Initializing = 10,
+        Initializing = 10,
 
-		Initialized = 20,
+        Initialized = 20,
 
-		Started = 30,
+        Started = 30,
 
-		Processing = 50,
+        Processing = 50,
 
-		FailedToStart = 253,
+        NoChecksToRun = 252,
 
-		Finished = 254,
+        FailedToStart = 253,
 
-
-	}
+        Finished = 254,
+    }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ResourceHealthChecker;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,17 +12,18 @@ using System.Threading.Tasks;
 namespace SlugEnt.ResourceHealthChecker
 {
     /// <summary>
-    /// Background Health Check Processor, that controls the checking of health checks.
+    /// Background Health Check Processor, that controls the checking of health checks in a background process.
     /// </summary>
     public class HealthCheckerBackgroundProcessor : BackgroundService, IHealthCheckerBackgroundProcessor
     {
         private readonly ILogger<HealthCheckerBackgroundProcessor> _logger;
-        private readonly IServiceProvider                          _serviceProvider;
-        private readonly HealthCheckProcessor                      _healthCheckProcessor;
-        private          EnumHealthStatus                          _lastHealthStatus = EnumHealthStatus.Unknown;
-        private          int                                       _lastStatusCount  = 0;
-        private          int                                       _sleepTime        = 5000;
-        private readonly Action<int>                               _setSleepAction;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly HealthCheckProcessor _healthCheckProcessor;
+        private          EnumHealthStatus _lastHealthStatus = EnumHealthStatus.Unknown;
+        private          int _lastStatusCount = 0;
+        private          int _sleepTime = 5000;
+        private readonly Action<int> _setSleepAction;
+        private          int _maxStartDelay = 2000; // The maximum time to wait for the HealthCheckProcessor to finish construction and initial startup.
 
 
         /// <summary>
@@ -58,19 +60,29 @@ namespace SlugEnt.ResourceHealthChecker
             _healthCheckProcessor.CancellationToken = stoppingToken;
 
             // Wait for HealthCheckProcessor Startup to occur
-            int loopCtr = 0;
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            int       loopCtr   = 21;
             while (!stoppingToken.IsCancellationRequested)
             {
                 loopCtr++;
-                if (_healthCheckProcessor.ProcessingStage != EnumHealthCheckProcessorStage.Processing)
+
+                if (_healthCheckProcessor.ProcessingStage >= EnumHealthCheckProcessorStage.Initialized)
+                    return;
+
+                // It has not finished the startup process so log warnings, but eventually crash out
+                if (loopCtr > 20)
                 {
-                    if (loopCtr > 6)
-                        _logger.LogWarning("Still Waiting for HealthCheckProcessor to enter the post startup phase.");
-                    await Task.Delay(5000, stoppingToken);
+                    _logger.LogWarning("Still Waiting for HealthCheckProcessor to enter the post startup phase.");
+                    loopCtr = 0;
                 }
 
-                if (_healthCheckProcessor.ProcessingStage > EnumHealthCheckProcessorStage.Processing)
-                    return;
+                await Task.Delay(50, stoppingToken);
+                if (stopwatch.ElapsedMilliseconds > _maxStartDelay)
+                {
+                    string msg = "Health Check Processor never finished initial startup phase.";
+                    _logger.LogCritical(msg);
+                    throw new ApplicationException(msg);
+                }
             }
         }
 
