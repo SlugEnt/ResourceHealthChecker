@@ -27,7 +27,8 @@ namespace SlugEnt.ResourceHealthChecker
         /// Constructor used when building object from Configuration
         /// </summary>
         /// <param name="logger"></param>
-        public HealthCheckerFileSystem(ILogger<HealthCheckerFileSystem> logger, IServiceProvider ser) : base(logger)
+        public HealthCheckerFileSystem(ILogger<HealthCheckerFileSystem> logger,
+                                       IServiceProvider ser) : base(logger)
         {
             _fileSystem       = new FileSystem();
             HealthCheckerType = EnumHealthCheckerType.FileSystem;
@@ -43,8 +44,13 @@ namespace SlugEnt.ResourceHealthChecker
         /// <param name="logger">Where logs are sent</param>
         /// <param name="descriptiveName">Name for this File System Check - usually indicates what is being checked, for instance, Web Downloads</param>
         /// <param name="config">The Health checker Config for the file System Check.</param>
-        public HealthCheckerFileSystem(IFileSystem fileSystem, ILogger<HealthCheckerFileSystem> logger, string descriptiveName,
-                                       HealthCheckerConfigFileSystem config) : base(descriptiveName, EnumHealthCheckerType.FileSystem, config, logger)
+        public HealthCheckerFileSystem(IFileSystem fileSystem,
+                                       ILogger<HealthCheckerFileSystem> logger,
+                                       string descriptiveName,
+                                       HealthCheckerConfigFileSystem config) : base(descriptiveName,
+                                                                                    EnumHealthCheckerType.FileSystem,
+                                                                                    config,
+                                                                                    logger)
         {
             _fileSystem       = fileSystem;
             HealthCheckerType = EnumHealthCheckerType.FileSystem;
@@ -59,8 +65,13 @@ namespace SlugEnt.ResourceHealthChecker
         /// <param name="logger"></param>
         /// <param name="descriptiveName"></param>
         /// <param name="config"></param>
-        public HealthCheckerFileSystem(ILogger<HealthCheckerFileSystem> logger, string descriptiveName, HealthCheckerConfigFileSystem config) :
-            this(new FileSystem(), logger, descriptiveName, config)
+        public HealthCheckerFileSystem(ILogger<HealthCheckerFileSystem> logger,
+                                       string descriptiveName,
+                                       HealthCheckerConfigFileSystem config) :
+            this(new FileSystem(),
+                 logger,
+                 descriptiveName,
+                 config)
         {
             HealthCheckerType = EnumHealthCheckerType.FileSystem;
         }
@@ -232,9 +243,11 @@ namespace SlugEnt.ResourceHealthChecker
                         // Read a byte from file
                         if (fileName != string.Empty)
                         {
-                            using (Stream fs = (Stream)_fileSystem.FileStream.Create(fileName, FileMode.Open))
-                                for (int i = 0; i < 1; i++)
-                                    fs.ReadByte();
+                            using FileSystemStream fs = _fileSystem.FileStream.New(fileName, FileMode.Open);
+
+                            //using (Stream fs = (Stream)_fileSystem.FileStream.Create(fileName, FileMode.Open))
+                            for (int i = 0; i < 1; i++)
+                                fs.ReadByte();
                             _statusRead = EnumHealthStatus.Healthy;
                         }
 
@@ -242,7 +255,7 @@ namespace SlugEnt.ResourceHealthChecker
                         else
                         {
                             _statusRead = EnumHealthStatus.Degraded;
-                            message = "No file found to read.  Cannot firmly determine if Read permission to files is enabled. See documentation for more info";
+                            message     = "No file found to read.  Cannot firmly determine if Read permission to files is enabled. See documentation for more info";
                         }
                     }
                     else
@@ -283,7 +296,8 @@ namespace SlugEnt.ResourceHealthChecker
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="configurationSectionRoot"></param>
-        public override void SetupFromConfig(IConfiguration configuration, string configurationSectionRoot)
+        public override void SetupFromConfig(IConfiguration configuration,
+                                             string configurationSectionRoot)
         {
             base.SetupFromConfig(configuration, configurationSectionRoot);
 

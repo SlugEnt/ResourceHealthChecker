@@ -1,21 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.3.7</AssemblyVersion>
-	<Version>1.3.7</Version>
+    <AssemblyVersion>1.4.0.0</AssemblyVersion>
+	<Version>1.4.0.0</Version>
     <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>
     <Authors>Scott Herrmann</Authors>
     <Company>SlugEnt</Company>
     <Title>Provides File Checking Health Checks for the ResourceHealthChecker library</Title>
     <Copyright>Scott Herrmann 2023</Copyright>
+	<IncludeSymbols>True</IncludeSymbols>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.IO.Abstractions" Version="17.0.15" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ResourceHealthChecker\ResourceHealthChecker.csproj" />
@@ -26,6 +23,12 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>HealthCheck_Test</_Parameter1>
 		</AssemblyAttribute>
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <PackageReference Include="TestableIO.System.IO.Abstractions" Version="21.0.2" />
+	  <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="21.0.2" />
 	</ItemGroup>
 
 </Project>
