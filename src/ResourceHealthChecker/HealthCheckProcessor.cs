@@ -57,13 +57,13 @@ public class HealthCheckProcessor
                     string typeLower = hc.Type.ToLower();
                     if (typeLower == "filesystem")
                     {
-                        healthChecker = (IHealthChecker)serviceProvider.GetService<IFileSystemHealthChecker>();
+                        healthChecker = (IHealthChecker)serviceProvider.GetService<IHealthCheckerFileSystem>();
                         if (healthChecker == null)
                             logger.LogError("Unable to find a Services Instance for a FileSystemHealthChecker.  Ensure it has been added to the Services scope");
                     }
                     else if (typeLower == "sql")
                     {
-                        healthChecker = (IHealthChecker)serviceProvider.GetService<ISQLServerHealthChecker>();
+                        healthChecker = (IHealthChecker)serviceProvider.GetService<IHealthCheckerSQLServer>();
                         if (healthChecker == null)
                             logger.LogError("Unable to find a Services Instance for a SQLServerHealthChecker.  Ensure it has been added to the Services scope");
                     }
@@ -87,6 +87,7 @@ public class HealthCheckProcessor
 
                 // Get the HealthChecker Interval 
                 this.CheckIntervalMS = configurationResourceHealthChecker.CheckIntervalMS;
+                ProcessingStage      = EnumHealthCheckProcessorStage.Started;
             }
 
             // There are no health checks so set to ready.
@@ -260,6 +261,12 @@ public class HealthCheckProcessor
     {
         StringBuilder sb = new(2048);
         sb.Append("<html>");
+        if (_healthCheckerList.Count == 0)
+        {
+            sb.Append("<H1> No Health Checks defined.</H2>");
+            return sb;
+        }
+
         foreach (IHealthChecker healthChecker in _healthCheckerList)
         {
             string color = GetStatusColor(healthChecker.Status);

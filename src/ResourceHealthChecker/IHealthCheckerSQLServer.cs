@@ -3,4 +3,4 @@
 /// <summary>
 /// Defines SQL Server Health Checker Interface
 /// </summary>
-public interface ISQLServerHealthChecker { }
+public interface IHealthCheckerSQLServer { }

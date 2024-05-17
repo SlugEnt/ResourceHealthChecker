@@ -295,6 +295,7 @@ namespace SlugEnt.ResourceHealthChecker
         public abstract void DisplayHTML(StringBuilder sb);
 
 
+
         /// <summary>
         /// Reads the common properties of Config items for the ConfigurationHealthChecks configuration objects
         /// </summary>

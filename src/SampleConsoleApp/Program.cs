@@ -82,9 +82,9 @@ namespace SlugEnt.ResourceHealthChecker.SampleConsole
                                                                   //.AddHostedService<HealthCheckerBackgroundProcessor>()
 
                                                                   // Eventually do something else like single call to add all Healthcheckers
-                                                                  .AddTransient<IFileSystemHealthChecker, HealthCheckerFileSystem>()
-                                                                  .AddTransient<ISQLServerHealthChecker, HealthCheckerSQLServer>()
-                                                                  .AddTransient<IFileSystemHealthChecker, HealthCheckerFileSystem>()
+                                                                  .AddTransient<IHealthCheckerFileSystem, HealthCheckerFileSystem>()
+                                                                  .AddTransient<IHealthCheckerSQLServer, HealthCheckerSQLServer>()
+                                                                  .AddTransient<IHealthCheckerFileSystem, HealthCheckerFileSystem>()
                                                      )
                                    .Build();
 

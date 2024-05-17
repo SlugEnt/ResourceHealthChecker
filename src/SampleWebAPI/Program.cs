@@ -1,4 +1,5 @@
 using SlugEnt.ResourceHealthChecker;
+using SlugEnt.ResourceHealthChecker.SqlServer;
 
 namespace SampleWebAPI
 {
@@ -18,8 +19,10 @@ namespace SampleWebAPI
 
             // Testing
             builder.Services.AddSingleton<HealthCheckProcessor>();
-            builder.Services.AddHostedService<HealthCheckerBackgroundProcessor>();
 
+            builder.Services.AddTransient<IHealthCheckerFileSystem, HealthCheckerFileSystem>();
+            builder.Services.AddHostedService<HealthCheckerBackgroundProcessor>();
+            builder.Services.AddTransient<IHealthCheckerSQLServer, HealthCheckerSQLServer>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

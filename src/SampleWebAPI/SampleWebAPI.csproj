@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ResourceHealthChecker.FileSystem\ResourceHealthChecker.FileSystem.csproj" />
+    <ProjectReference Include="..\ResourceHealthChecker.SqlServer\ResourceHealthChecker.SqlServer.csproj" />
     <ProjectReference Include="..\ResourceHealthChecker\ResourceHealthChecker.csproj" />
   </ItemGroup>
 

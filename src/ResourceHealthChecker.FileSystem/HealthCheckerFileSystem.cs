@@ -15,7 +15,7 @@ namespace SlugEnt.ResourceHealthChecker
     /// <summary>
     /// Performs a Health Check on a File System
     /// </summary>
-    public class HealthCheckerFileSystem : AbstractHealthChecker, IFileSystemHealthChecker, IHealthChecker
+    public class HealthCheckerFileSystem : AbstractHealthChecker, IHealthCheckerFileSystem, IHealthChecker
     {
         private readonly IFileSystem      _fileSystem;
         private          EnumHealthStatus _statusRead    = EnumHealthStatus.Failed;

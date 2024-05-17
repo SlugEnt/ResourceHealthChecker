@@ -5,7 +5,7 @@ namespace SlugEnt.ResourceHealthChecker;
 /// <summary>
 /// Configuration settings for the FileSystem health check.
 /// </summary>
-public class HealthCheckerConfigFileSystem : HealthCheckConfigBase, IConfigurationHealthCheckConfig, IFileSystemHealthChecker
+public class HealthCheckerConfigFileSystem : HealthCheckConfigBase, IConfigurationHealthCheckConfig, IHealthCheckerFileSystem
 {
     /// <summary>
     /// The fully qualified path to be checked
