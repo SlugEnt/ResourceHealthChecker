@@ -4,14 +4,20 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.4.0.0</AssemblyVersion>
-	<Version>1.4.0.0</Version>
+    <AssemblyVersion>1.8.0.0</AssemblyVersion>
+	<Version>1.8.0.0</Version>
     <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>
     <Authors>Scott Herrmann</Authors>
     <Company>SlugEnt</Company>
     <Title>Provides File Checking Health Checks for the ResourceHealthChecker library</Title>
-    <Copyright>Scott Herrmann 2023</Copyright>
+    <Copyright>Scott Herrmann 2024</Copyright>
 	<IncludeSymbols>True</IncludeSymbols>
+	<Description>File System Resource Health Checker</Description>
+	  <RepositoryUrl>https://github.com/SlugEnt/ResourceHealthChecker</RepositoryUrl>
+	  <PackageTags>Health Resource</PackageTags>
+	  <PackageReleaseNotes>Upgraded to .Net8  Release</PackageReleaseNotes>
+	  <PackageProjectUrl>https://github.com/SlugEnt/ResourceHealthChecker</PackageProjectUrl>
+	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,8 +33,8 @@
 
 
 	<ItemGroup>
-	  <PackageReference Include="TestableIO.System.IO.Abstractions" Version="21.0.2" />
-	  <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="21.0.2" />
+	  <PackageReference Include="TestableIO.System.IO.Abstractions" Version="21.0.29" />
+	  <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="21.0.29" />
 	</ItemGroup>
 
 </Project>

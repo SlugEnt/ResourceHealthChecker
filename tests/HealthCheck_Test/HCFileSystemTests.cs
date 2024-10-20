@@ -94,8 +94,8 @@ namespace HealthCheck_Test
             // C. Validate
 
             // check the Status
-            Assert.AreEqual(expectedHealthStatus, healthChecker.StatusWrite, "A10");
-            Assert.AreEqual(expectedHealthStatus, healthChecker.Status, "A20");
+            Assert.That(expectedHealthStatus == healthChecker.StatusWrite, "A10");
+            Assert.That(expectedHealthStatus == healthChecker.Status, "A20");
         }
 
 
@@ -140,8 +140,8 @@ namespace HealthCheck_Test
             // C. Validate
 
             // check the Status
-            Assert.AreEqual(expectedHealthStatus, healthChecker.StatusRead, "A10");
-            Assert.AreEqual(expectedHealthStatus, healthChecker.Status, "A20");
+            Assert.That(expectedHealthStatus == healthChecker.StatusRead, "A10");
+            Assert.That(expectedHealthStatus == healthChecker.Status, "A20");
         }
 
 
@@ -191,8 +191,8 @@ namespace HealthCheck_Test
             // C. Validate
 
             // check the Status
-            Assert.AreEqual(expectedHealthStatus, healthChecker.StatusRead, "A10:  " + healthChecker.HealthEntries[0].Message);
-            Assert.AreEqual(expectedHealthStatus, healthChecker.Status, "A20");
+            Assert.That(expectedHealthStatus == healthChecker.StatusRead, "A10:  " + healthChecker.HealthEntries[0].Message);
+            Assert.That(expectedHealthStatus == healthChecker.Status, "A20");
         }
 
 
@@ -275,8 +275,8 @@ namespace HealthCheck_Test
             // C. Validate
 
             // check the Status
-            Assert.AreEqual(expectedHealthStatus, healthChecker.StatusRead, "A10");
-            Assert.AreEqual(expectedHealthStatus, healthChecker.Status, "A20");
+            Assert.That(expectedHealthStatus == healthChecker.StatusRead, "A10");
+            Assert.That(expectedHealthStatus == healthChecker.Status, "A20");
         }
     }
 }
