@@ -4,20 +4,25 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.4.0.0</AssemblyVersion>
-	<Version>1.4.0.0</Version>
+    <AssemblyVersion>1.8.0.0</AssemblyVersion>
+	<Version>1.8.0.0</Version>
     <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>
     <PackageId>$(AssemblyName)</PackageId>
     <Authors>Scott Herrmann</Authors>
     <Title>Provides Health Check for Sql Server</Title>
     <Company>SlugEnt</Company>
     <Description>Provides a simple means of health checking a sql server for a program that relies on the database.  Works as a part of the ResourceHealthChecker library</Description>
-    <Copyright>Scott Herrmann 2023</Copyright>
+    <Copyright>Scott Herrmann 2024</Copyright>
     <IncludeSymbols>True</IncludeSymbols>
+	  <RepositoryUrl>https://github.com/SlugEnt/ResourceHealthChecker</RepositoryUrl>
+	  <PackageTags>Health Resource</PackageTags>
+	  <PackageReleaseNotes>Upgraded to .Net8  Release</PackageReleaseNotes>
+	  <PackageProjectUrl>https://github.com/SlugEnt/ResourceHealthChecker</PackageProjectUrl>
+	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
   </ItemGroup>
 
   <ItemGroup>

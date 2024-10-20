@@ -23,14 +23,19 @@ public class HealthCheckProcessor
     private          bool                          _isStartingUp;
     private          IConfiguration                _configuration;
 
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public HealthCheckProcessor() { }
 
 
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="checkIntervalInSeconds"></param>
-    public HealthCheckProcessor(ILogger<HealthCheckProcessor> logger, IConfiguration configuration, IServiceProvider serviceProvider)
+    public HealthCheckProcessor(ILogger<HealthCheckProcessor> logger,
+                                IConfiguration configuration,
+                                IServiceProvider serviceProvider)
     {
         _healthCheckerList = new List<IHealthChecker>();
         _logger            = logger;
@@ -72,8 +77,8 @@ public class HealthCheckProcessor
                         throw new ApplicationException("A required HealthChecker was not able to be loaded from the Services Scope.");
 
                     // Set common properties of all health checkers from the config.
-                    healthChecker.Name      = hc.Name;      // configuration.GetSection(configRoot + ":Name").Get<string>();
-                    healthChecker.IsEnabled = hc.IsEnabled; //configuration.GetSection(configRoot + ":IsEnabled").Get<bool>();
+                    healthChecker.Name      = hc.Name;
+                    healthChecker.IsEnabled = hc.IsEnabled;
 
 
                     // Finish setup by calling Individual HealthChecker Config sections

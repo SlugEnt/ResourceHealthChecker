@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <AssemblyVersion>1.4.0.0</AssemblyVersion>
-    <Version>1.4.0.0</Version>
+    <AssemblyVersion>1.8.0.0</AssemblyVersion>
+    <Version>1.8.0.0</Version>
     <PackageId>SlugEnt.$(AssemblyName)</PackageId>
     <Authors>daborg69</Authors>
     <AssemblyName>SlugEnt.$(MSBuildProjectName)</AssemblyName>
     <Company>SlugEnt</Company>
     <Description>Provides the core ResourceHealthChecking capability which allows applications to automatically check on the resources they need.</Description>
-    <Copyright>Scott Herrmann 2022</Copyright>
+    <Copyright>Scott Herrmann 2024</Copyright>
     <PackageProjectUrl>https://github.com/SlugEnt/ResourceHealthChecker</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/SlugEnt/ResourceHealthChecker</RepositoryUrl>
@@ -19,13 +19,14 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Title>Provides some simplistic resource checking for an application</Title>
     <IncludeSymbols>True</IncludeSymbols>
+    <FileVersion>1.8.0.0</FileVersion>
     
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
 	<ItemGroup>

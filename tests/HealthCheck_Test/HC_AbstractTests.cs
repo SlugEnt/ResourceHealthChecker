@@ -64,11 +64,11 @@ namespace HealthCheck_Test
 
             // C. Validate
             if (expectedStatus != EnumHealthStatus.NotCheckedYet && expectedStatus != EnumHealthStatus.Unknown)
-                Assert.AreEqual(expectedStatus, checker.Status, "A10:");
+                Assert.That(expectedStatus, Is.EqualTo(checker.Status), "A10:");
 
             // NotCheckedYet should never be returned.  Unknown is returned.
             else
-                Assert.AreEqual(EnumHealthStatus.Healthy, checker.Status, "A20:");
+                Assert.That(EnumHealthStatus.Healthy, Is.EqualTo(checker.Status), "A20:");
         }
 
 
@@ -77,6 +77,8 @@ namespace HealthCheck_Test
         /// Tests that the Status returned by the PerformHealth Check routines is actually set.
         /// </summary>
         /// <returns></returns>
+#pragma warning disable CS4014
+#pragma warning disable CS1998
         [Test]
         public async Task IsRunningIsSet_WhileRunning()
         {
@@ -92,13 +94,15 @@ namespace HealthCheck_Test
 
 
             // B. Test
-#pragma warning disable CS4014
+
             checker.CheckHealth(_cancellationToken);
-#pragma warning restore CS4014
+
 
             // C. Validate
-            Assert.IsTrue(checker.IsRunning, "A10");
+            Assert.That(checker.IsRunning, Is.True, "A10");
         }
+#pragma warning restore CS4014
+#pragma warning restore CS1998
 
 
         /// <summary>
@@ -125,9 +129,9 @@ namespace HealthCheck_Test
 #pragma warning restore CS4014
 
             // C. Validate
-            Assert.IsTrue(checker.IsRunning, "A10");
+            Assert.That(checker.IsRunning, Is.True, "A10");
             await Task.Delay(config.RunDelay + 50);
-            Assert.IsFalse(checker.IsRunning, "A20");
+            Assert.That(checker.IsRunning, Is.False, "A20");
         }
 
 
@@ -167,16 +171,16 @@ namespace HealthCheck_Test
             // C. Validate
 
             // check the Status
-            Assert.AreEqual(EnumHealthStatus.Healthy, checker.Status, "A10");
+            Assert.That(EnumHealthStatus.Healthy, Is.EqualTo(checker.Status), "A10");
 
             // Make sure 1 entry in HealthRecords.
-            Assert.AreEqual(1, checker.HealthEntries.Count, "A20");
+            Assert.That(1, Is.EqualTo(checker.HealthEntries.Count), "A20");
 
             // First HealthEntry is Health
-            Assert.AreEqual(EnumHealthStatus.Healthy, checker.HealthEntries[0].HealthStatus, "A30");
+            Assert.That(EnumHealthStatus.Healthy, Is.EqualTo(checker.HealthEntries[0].HealthStatus), "A30");
 
             // First HealthEntry status count = 3
-            Assert.AreEqual(3, checker.HealthEntries[0].Count, "A40");
+            Assert.That(checker.HealthEntries[0].Count, Is.EqualTo(3), "A40");
         }
 
 
@@ -217,22 +221,22 @@ namespace HealthCheck_Test
             // C. Validate
 
             // check the Status
-            Assert.AreEqual(EnumHealthStatus.Healthy, checker.Status, "A10");
+            Assert.That(checker.Status, Is.EqualTo(EnumHealthStatus.Healthy), "A10");
 
             // Make sure 3 entries in HealthRecords.
-            Assert.AreEqual(3, checker.HealthEntries.Count, "A20");
+            Assert.That(checker.HealthEntries.Count, Is.EqualTo(3), "A20");
 
             // First and 3rd HealthEntry is Healthy
-            Assert.AreEqual(EnumHealthStatus.Healthy, checker.HealthEntries[0].HealthStatus, "A30");
-            Assert.AreEqual(EnumHealthStatus.Healthy, checker.HealthEntries[2].HealthStatus, "A31");
+            Assert.That(checker.HealthEntries[0].HealthStatus, Is.EqualTo(EnumHealthStatus.Healthy), "A30");
+            Assert.That(checker.HealthEntries[2].HealthStatus, Is.EqualTo(EnumHealthStatus.Healthy), "A31");
 
             // Second is degraded
-            Assert.AreEqual(EnumHealthStatus.Degraded, checker.HealthEntries[1].HealthStatus, "A32");
+            Assert.That(checker.HealthEntries[1].HealthStatus, Is.EqualTo(EnumHealthStatus.Degraded), "A32");
 
             // First HealthEntry status count for all 3 is 1
-            Assert.AreEqual(1, checker.HealthEntries[0].Count, "A40");
-            Assert.AreEqual(1, checker.HealthEntries[1].Count, "A41");
-            Assert.AreEqual(1, checker.HealthEntries[2].Count, "A42");
+            Assert.That(checker.HealthEntries[0].Count, Is.EqualTo(1), "A40");
+            Assert.That(checker.HealthEntries[1].Count, Is.EqualTo(1), "A41");
+            Assert.That(checker.HealthEntries[2].Count, Is.EqualTo(1), "A42");
         }
 
 
@@ -258,7 +262,7 @@ namespace HealthCheck_Test
 
 
             // C. Validate
-            Assert.AreEqual(EnumHealthCheckerType.Dummy, checker.HealthCheckerType, "A10");
+            Assert.That(checker.HealthCheckerType, Is.EqualTo(EnumHealthCheckerType.Dummy), "A10");
         }
 
 
@@ -296,7 +300,7 @@ namespace HealthCheck_Test
             // C.  Validate
             // Next status check has been set.
             //Assert.Greater(checker.NextStatusCheck, DateTimeOffset.Now, "A10");
-            Assert.Greater(checker.NextStatusCheck, currentNextStatus, "A20");
+            Assert.That(checker.NextStatusCheck, Is.GreaterThan(currentNextStatus), "A20");
         }
 
 
@@ -324,7 +328,7 @@ namespace HealthCheck_Test
 
             // C.  Validate
             // Next status check has been set.
-            Assert.AreEqual(checker.Status, EnumHealthStatus.Disabled, "A10:");
+            Assert.That(EnumHealthStatus.Disabled, Is.EqualTo(checker.Status), "A10:");
         }
     }
 }
