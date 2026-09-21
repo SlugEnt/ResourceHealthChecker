@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.1.32210.238
+# Visual Studio Version 18
+VisualStudioVersion = 18.9.12105.275 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceHealthChecker", "ResourceHealthChecker\ResourceHealthChecker.csproj", "{3B0FC6A1-0D73-4052-9D95-9D0D41570D61}"
 EndProject
@@ -17,9 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceHealthChecker.Rabbi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6DCF5FC8-5139-4D7E-9FD3-19E6A78C8ACF}"
 	ProjectSection(SolutionItems) = preProject
-		..\Scripts\PushToNuget_Local.cmd = ..\Scripts\PushToNuget_Local.cmd
+		..\Scripts\PublishToNuget.ps1 = ..\Scripts\PublishToNuget.ps1
 		..\README.md = ..\README.md
-		..\Scripts\ReleaseToPublicNuget.cmd = ..\Scripts\ReleaseToPublicNuget.cmd
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWebAPI", "SampleWebAPI\SampleWebAPI.csproj", "{B69CDD5E-1D46-4EB9-BB27-2E23A31AAC42}"
