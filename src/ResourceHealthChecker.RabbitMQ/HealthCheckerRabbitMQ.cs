@@ -181,8 +181,8 @@ namespace SlugEnt.ResourceHealthChecker.RabbitMQ
                     Uri = new Uri(MQConfig.URL),
                 };
 
-                using var connection = factory.CreateConnection();
-                using var channel    = connection.CreateModel();
+                using var connection = await factory.CreateConnectionAsync();
+                using var channel    = await connection.CreateChannelAsync();
             }
             catch (Exception ex)
             {
